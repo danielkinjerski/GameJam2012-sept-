@@ -15,7 +15,7 @@ class SpriteAnimation : MonoBehaviour
     public List<SpriteAnim> anims;
     public int columns = 2;
     public int rows = 2;
-    public float framesPerSecond = 10f;
+    public float framesPerSecond = 10f;//
 
 
     //the current frame to display
