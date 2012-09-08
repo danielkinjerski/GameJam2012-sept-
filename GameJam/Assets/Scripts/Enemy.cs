@@ -88,7 +88,7 @@ public class Enemy : CharacterBasics {
 	public bool Seek(Vector3 targetPos)
     {
         var tempDir = (targetPos - transform.position);
-		Debug.Log(tempDir.magnitude);
+		//Debug.Log(tempDir.magnitude);
         Vector2 direction = new Vector3(tempDir.x, tempDir.z);
 		
         //The distance between me and the target is greater than the minimum distance allowed.
