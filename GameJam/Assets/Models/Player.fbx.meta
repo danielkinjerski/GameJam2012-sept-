@@ -1,11 +1,17 @@
 fileFormatVersion: 2
-guid: 93bed62dcb382314585eca43bd6812b5
+guid: 1dc68313c26816e43bd67ccba6745b52
 ModelImporter:
   fileIDToRecycleName:
     4300000: Cube
     7400000: Default Take //// Player
     7400002: Idle //// Player
-    7400004: Walking //// Player
+    7400004: Standing //// Player
+    7400006: Walking //// Player
+    7400008: Bouncy //// Player
+    7400010: Fall //// Player
+    7400012: Jump //// Player
+    7400014: LeftPunch //// Player
+    7400016: RightPunch //// Player
   serializedVersion: 10
   materials:
     importMaterials: 1
@@ -43,27 +49,27 @@ ModelImporter:
     //RootNode:
       data:
         first: 1
-        second: b0860100
+        second: ba860100
       data:
         first: 4
-        second: 901a0600
+        second: 9a1a0600
       data:
         first: 111
         second: 605fa900
     Arm_L:
       data:
         first: 1
-        second: b4860100
+        second: a8860100
       data:
         first: 4
-        second: 941a0600
+        second: 881a0600
     Arm_L_001:
       data:
         first: 1
-        second: a4860100
+        second: bc860100
       data:
         first: 4
-        second: 841a0600
+        second: 9c1a0600
     Arm_L_002:
       data:
         first: 1
@@ -74,83 +80,83 @@ ModelImporter:
     Arm_R:
       data:
         first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    Arm_R_001:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+    Arm_R_002:
+      data:
+        first: 1
         second: a2860100
       data:
         first: 4
         second: 821a0600
-    Arm_R_001:
+    Armature:
       data:
         first: 1
         second: b2860100
       data:
         first: 4
         second: 921a0600
-    Arm_R_002:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-    Armature:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
     Chest:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-    Cube:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 137
-        second: a00bd100
-    Head:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-    Neck:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-    Waist:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-    Waist_L:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-    Waist_L_001:
       data:
         first: 1
         second: c0860100
       data:
         first: 4
         second: a01a0600
+    Cube:
+      data:
+        first: 1
+        second: c4860100
+      data:
+        first: 4
+        second: a41a0600
+      data:
+        first: 137
+        second: a00bd100
+    Head:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    Neck:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+    Waist:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    Waist_L:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+    Waist_L_001:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
     Waist_L_002:
       data:
         first: 1
@@ -161,10 +167,10 @@ ModelImporter:
     Waist_R:
       data:
         first: 1
-        second: ae860100
+        second: aa860100
       data:
         first: 4
-        second: 8e1a0600
+        second: 8a1a0600
     Waist_R_001:
       data:
         first: 1
@@ -175,7 +181,7 @@ ModelImporter:
     Waist_R_002:
       data:
         first: 1
-        second: c4860100
+        second: ae860100
       data:
         first: 4
-        second: a41a0600
+        second: 8e1a0600
