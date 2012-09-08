@@ -5,12 +5,12 @@ public class CharacterBasics : MonoBehaviour {
 	
 	public float speed, maxSpeed = 8, targetSpeed, accelerationSpeed = 1f, gravity = 20;
 	
-    public Vector3 direction, force;
+    public Vector3 direction, force, velocity;
 	
 	public float jumpHeight;
 	
 	public Color normalColor;
-
+	public bool ledgehanging;
 	
 	
 	#region Animation Names
@@ -125,15 +125,61 @@ public class CharacterBasics : MonoBehaviour {
     }
 	
 	#region Physics
-	public virtual void Gravity()	
-	{
-		var velocity = direction;
-				
-		velocity.y = direction.y;
-		direction.y = velocity.y;
+	
+//		var velocity = direction;
+//				
+//		velocity.y = direction.y;
+//		direction.y = velocity.y;
+//		
+//		direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;	
 		
-		direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;	
+	protected virtual void Gravity()
+	{
+		RaycastHit hit;
+			Vector3 down = new Vector3(trans.position.x, trans.position.y - 2f, trans.position.z);
+			Debug.DrawLine(trans.position, down, Color.cyan);
+			
+			//If not on the ground, assume normal gravity
+	        if (!controller.isGrounded && jumping)	
+			{
+				direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;
+				if (direction.y < 1)
+					falling = true;
+			}
+			else
+			if (!Physics.Raycast(trans.position, Vector3.down, out hit,2f) && !jumping)
+			{			
+				if (!falling)
+				{
+					direction.y = 0;
+					falling = true;
+				}
+				//direction.y = velocity.y;
+				
+				direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;
+			}
+			
+			//Needed to make the corresponding animations work
+			if (controller.isGrounded || ledgehanging)
+			{
+				jumping = false;
+				falling = false;
+				//canLedgehang = true;
+			}
+		
+			//Allows for jumping
+			if (controller.isGrounded) 
+			{
+				//Jumping
+		        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton1))
+				{
+		         	//justJumped = true;
+					Launch();
+			}
+		}
 	}
+
+
 	
 	/// <summary>
 	/// Used for jumping and launching

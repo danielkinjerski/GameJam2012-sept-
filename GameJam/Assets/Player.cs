@@ -4,11 +4,11 @@ using System.Collections;
 public class Player : CharacterBasics {
 	
 	#region Fields
-	private Vector3 velocity;
+	//private Vector3 velocity;
 	
 	//Ledgehanging
     public float torsoOffset = 0, topOffset = 0;
-    public bool torsoHit, ledgehanging, topHit, wallClimbing;
+    public bool torsoHit, topHit, wallClimbing;
 	
 	#region Sliding
 	public float rayDistance = 2;
