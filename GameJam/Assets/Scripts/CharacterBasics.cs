@@ -183,7 +183,14 @@ public class CharacterBasics : MonoBehaviour {
         //apply gravity
         Gravity();
 
+        float currentHeight = 0;
+        if(_holdTheJump>0)
+            currentHeight = trans.position.y;
+
         controller.Move(direction * Time.deltaTime);
+
+        if (currentHeight == trans.position.y)
+            direction.y = 0;
 
         //are we still moving?
         return (speed == 0)? false: true;
