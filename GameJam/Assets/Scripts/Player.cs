@@ -42,7 +42,7 @@ public class Player : CharacterBasics {
 	
 	public virtual void Movement()
     {
-		//AnimationFramework();
+		AnimationFramework();
 		
         //Directional movement time
         var tempDir = Camera.mainCamera.transform.forward * InputMovement().y + InputMovement().x * Camera.mainCamera.transform.right;
@@ -93,7 +93,6 @@ public class Player : CharacterBasics {
             force = Vector3.zero;
 		
 		//SlideOnSlopes(); //Must happen last
-
 
         //Reapply the vertical force and speed to the movement and override basic gravity
         controller.Move(direction * Time.deltaTime);
