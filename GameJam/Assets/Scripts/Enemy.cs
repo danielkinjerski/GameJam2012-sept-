@@ -89,7 +89,7 @@ public class Enemy : CharacterBasics {
     {
         var tempDir = (targetPos - transform.position);
 		Debug.Log(tempDir.magnitude);
-        direction = new Vector3(tempDir.x, direction.y, tempDir.z);
+        Vector2 direction = new Vector3(tempDir.x, tempDir.z);
 		
         //The distance between me and the target is greater than the minimum distance allowed.
         if ((tempDir.magnitude > minDistance))   
@@ -99,17 +99,15 @@ public class Enemy : CharacterBasics {
             RaycastHit hit;
             if (Physics.Raycast(transform.position + transform.forward, Vector3.down, out hit, 3))
             {
-                targetSpeed = maxSpeed;
-				direction = new Vector3(direction.x * targetSpeed, direction.y, direction.z * targetSpeed);
-                controller.Move(direction * Time.deltaTime);
+                base.BaseMovement(direction,maxSpeed);
             }
             else //If there is a pit fall ahead, stop moving
-            {targetSpeed = 0;}
+            { base.BaseMovement(direction, 0); }
             return false;
         }
-		//Point towards the target.
-        transform.forward = new Vector3(tempDir.x, 0, tempDir.z);
-        speed = 0;
+        ////Point towards the target.
+        //transform.forward = new Vector3(tempDir.x, 0, tempDir.z);
+        //speed = 0;
 		return true;
 	} 
 }
