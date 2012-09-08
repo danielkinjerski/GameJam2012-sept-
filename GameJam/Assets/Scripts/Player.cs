@@ -42,7 +42,7 @@ public class Player : CharacterBasics {
 	
 	public virtual void Movement()
     {
-		//AnimationFramework();
+		AnimationFramework();
 
 		if (ledgehanging)	
 		{return;}
