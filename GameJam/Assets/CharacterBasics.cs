@@ -143,7 +143,7 @@ public class CharacterBasics : MonoBehaviour {
 		if (controller.isGrounded)
         {
             direction.y = jumpHeight;
-            anim.CrossFade(jump, .01f);
+            //anim.CrossFade(jump, .01f);
 			jumping = true;
         }
 	}
