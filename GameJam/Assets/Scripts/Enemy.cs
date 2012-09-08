@@ -1,15 +1,115 @@
 using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : CharacterBasics {
+	
+	#region Fields
+	/// <summary>
+	/// The hitbox of the character
+	/// </summary>
+	public Collider hitbox;
+    /// <summary>
+    /// The attackbox of the character
+    /// </summary>
+    public Collider attackbox; 
+	public GameObject target;
+		
+	/// <summary>
+    /// Behavior collision check smoothing variables
+    /// </summary>
+	public float minDistance = 2, scopeDistance = 10, attackDistance = 2;
+	
+	   /// <summary>
+    /// This contains a set of states that dicate whether a character is a player, enemy, etc
+    /// </summary>
+    public enum CharacterType { enemy, netural }
+    public CharacterType charType = CharacterType.netural;
+	#endregion
 
-	// Use this for initialization
-	void Start () {
-	
+	/// <summary>
+	/// Update this instance.
+	/// </summary>
+	void Update () 
+	{
+	  if (charType == CharacterType.enemy)
+		{
+            this.gameObject.tag = "Enemy";
+			if (CheckTargetDistance() <= scopeDistance)
+				Seek(target.transform.position);
+		}
+		
+		if (charType == CharacterType.netural)
+            this.gameObject.tag = "Neutral";
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	/// <summary>
+    /// Returns the distance this object is away from the target
+    /// </summary>
+    public virtual float CheckTargetDistance()
+    {
+        float dist = Vector3.Distance(target.transform.position, this.transform.position);
+        return dist;
+    }
 	
-	}
+	/// <summary>
+    /// Check if target is inside this character's hitbox
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public bool HitBoxCheck(Collider t)
+    {
+        if (hitbox.collider.bounds.Intersects(t.bounds))
+        {
+           return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Check if target is inside this character's attackbox
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    public bool AttackBoxCheck(Collider t)
+    {
+        if (attackbox.collider.bounds.Intersects(t.bounds))
+        {
+            //print("Something's in my hitbox");
+            return true;
+        }
+        return false;
+    }
+	
+	/// <summary>
+    ///  Seek Behavior
+    /// </summary>
+    /// <param name="targetPos">target position</param>
+    /// <returns>ing or not</returns>
+	public bool Seek(Vector3 targetPos)
+    {
+        var tempDir = (targetPos - transform.position);
+		Debug.Log(tempDir.magnitude);
+        direction = new Vector3(tempDir.x, direction.y, tempDir.z);
+		
+        //The distance between me and the target is greater than the minimum distance allowed.
+        if ((tempDir.magnitude > minDistance))   
+        {
+			
+            //Check for potential pitfalls
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position + transform.forward, Vector3.down, out hit, 3))
+            {
+                targetSpeed = maxSpeed;
+				direction = new Vector3(direction.x * targetSpeed, direction.y, direction.z * targetSpeed);
+                controller.Move(direction * Time.deltaTime);
+            }
+            else //If there is a pit fall ahead, stop moving
+            {targetSpeed = 0;}
+            return false;
+        }
+		//Point towards the target.
+        transform.forward = new Vector3(tempDir.x, 0, tempDir.z);
+        speed = 0;
+		return true;
+	} 
 }
