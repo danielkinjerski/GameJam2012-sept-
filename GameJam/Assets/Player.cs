@@ -4,26 +4,17 @@ using System.Collections;
 public class Player : CharacterBasics {
 	
 	#region Fields
-	private Vector3 velocity;
-	private bool canLedgehang = true;
-	private bool canWallClimb = true;
+	//private Vector3 velocity;
 	
 	//Ledgehanging
     public float torsoOffset = 0, topOffset = 0;
-    public bool torsoHit, ledgehanging, topHit, wallClimbing;
+    public bool torsoHit, topHit, wallClimbing;
 	
 	#region Sliding
-	private float slideLimit;
 	public float rayDistance = 2;
 	private Vector3 contactPoint;
 	private RaycastHit hit;
-	public float slideSpeed = 15f;
 	public float levitate = 2;
-	
-	// If the player ends up on a slope which is at least the Slope Limit as set on the character controller, then he will slide down
-    public bool slideWhenOverSlopeLimit = false;
-	public bool sliding = false;
-
 	#endregion
 	
 	#region WallJump
@@ -36,9 +27,7 @@ public class Player : CharacterBasics {
 	#endregion
 	
 	#region Bool List
-	public bool onPole = false;
 	public bool canJump = true;
-	public bool justJumpedOffPole = false;
 	#endregion
 	
 	#endregion
@@ -47,14 +36,13 @@ public class Player : CharacterBasics {
 	{
 		base.Awake();
 		
-		normalColor = mesh.material.GetColor("_Ambient");
+		//normalColor = mesh.material.GetColor("_Ambient");
 		rayDistance = controller.height * .5f + controller.radius;
-        slideLimit = controller.slopeLimit - .1f;
 	}
 	
 	public virtual void Movement()
     {
-		AnimationFramework();
+		//AnimationFramework();
 
 		if (ledgehanging)	
 		{return;}
@@ -62,7 +50,7 @@ public class Player : CharacterBasics {
         //Directional movement time
         var tempDir = Camera.mainCamera.transform.forward * InputMovement().y + InputMovement().x * Camera.mainCamera.transform.right;
         
-		if (sliding || pushing)
+		if (pushing)
 			direction = new Vector3(direction.x, direction.y, direction.z); //Keeps movement from happening
 			else
 			direction = new Vector3(tempDir.x, direction.y, tempDir.z); //Input movement is used
@@ -120,9 +108,7 @@ public class Player : CharacterBasics {
     }
 	
 	public void LedgeChecking()
-    {
-    	if (sliding)
-    	return;
+    {		
     	
         RaycastHit torsoHitCast, topHitCast;
 
@@ -142,7 +128,7 @@ public class Player : CharacterBasics {
 					Launch(10);
 					ledgehanging = false;
                 }
-                else
+                else 
                 {
 					direction.y = 0;
                     trans.rotation = Quaternion.LookRotation(new Vector3(-torsoHitCast.normal.x,0,-torsoHitCast.normal.z));
@@ -150,11 +136,8 @@ public class Player : CharacterBasics {
 					//Falsfy all when on ledge
                     falling = false;
 					jumping = false;
-					gliding = false;
-					canWallClimb = false;
-					wallClimbing = false;
 					
-					anim.Play("Ledge_Hang_Pose");
+					//anim.Play("Ledge_Hang_Pose");
                     ledgehanging = true;
                 }
             }
@@ -166,9 +149,11 @@ public class Player : CharacterBasics {
         Debug.DrawRay(new Vector3(t.x, t.y + torsoOffset, t.z), fwd, Color.green);
     }
 	
+	/// <summary>
+	/// This allows for pushing rigibodies.
+	/// </summary>
 	public void PushRigibodies()
-	{
-    		
+	{	
         RaycastHit forwardCast;
 
         var fwd = transform.TransformDirection(Vector3.forward);
@@ -195,25 +180,6 @@ public class Player : CharacterBasics {
         Debug.DrawRay(new Vector3(t.x, t.y + torsoOffset, t.z), fwd, Color.blue);
 	}
 	
-    /// <summary>
-    /// Gliding reduces the gravity and speed
-    /// </summary>
-    /// <returns>Boolean for are we gliding or not.</returns>
-    private void Glide()
-    {
-		//Make sure I'm not on the ground or sliding down a slope.
-        if (!controller.isGrounded && !sliding && !onPole)
-        {
-        	gliding = true;
-			falling = false;
-			
-			direction.y -= (gravity / (float)levitate* Time.deltaTime);
-			direction.y = .01f;
-			
-            targetSpeed = maxSpeed;
-        }
-	}
-	
 	/// <summary>
 	/// 	Recieves the input from the axes
 	/// </summary>
@@ -224,4 +190,13 @@ public class Player : CharacterBasics {
     {
         return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
     }
+	
+	public void Update()
+	{
+		Movement();
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
+			Launch();
+		}
+	}
 }
