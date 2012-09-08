@@ -43,17 +43,11 @@ public class Player : CharacterBasics {
 	public virtual void Movement()
     {
 		//AnimationFramework();
-
-		if (ledgehanging)	
-		{return;}
 		
         //Directional movement time
         var tempDir = Camera.mainCamera.transform.forward * InputMovement().y + InputMovement().x * Camera.mainCamera.transform.right;
         
-		if (pushing)
-			direction = new Vector3(direction.x, direction.y, direction.z); //Keeps movement from happening
-			else
-			direction = new Vector3(tempDir.x, direction.y, tempDir.z); //Input movement is used
+		direction = new Vector3(tempDir.x, direction.y, tempDir.z); //Input movement is used
 
         targetSpeed = (tempDir.magnitude != 0) ? maxSpeed : 0;
         
@@ -63,9 +57,7 @@ public class Player : CharacterBasics {
         //snap movement
         if (new Vector3(tempDir.x, 0, tempDir.z).normalized.magnitude > 0.9f)
             trans.forward = new Vector3(direction.x, 0, direction.z);
-		
-		//Extra abilities for the player
-		PushRigibodies();
+
 	
 		//Lerping of speed, etc.
 		//////////////////////////////////////
@@ -149,36 +141,36 @@ public class Player : CharacterBasics {
         Debug.DrawRay(new Vector3(t.x, t.y + torsoOffset, t.z), fwd, Color.green);
     }
 	
-	/// <summary>
-	/// This allows for pushing rigibodies.
-	/// </summary>
-	public void PushRigibodies()
-	{	
-        RaycastHit forwardCast;
+    ///// <summary>
+    ///// This allows for pushing rigibodies.
+    ///// </summary>
+    //public void PushRigibodies()
+    //{	
+    //    RaycastHit forwardCast;
 
-        var fwd = transform.TransformDirection(Vector3.forward);
-        Vector3 t; t = transform.position;
+    //    var fwd = transform.TransformDirection(Vector3.forward);
+    //    Vector3 t; t = transform.position;
 		
-        //Torso Hit Confirmed
-        if (Physics.Raycast(new Vector3(t.x, t.y + torsoOffset, t.z), fwd, out forwardCast, .8f)
-            && direction.y < 2)
-        {
-            if ((forwardCast.collider.GetType() == typeof(BoxCollider)) && (forwardCast.collider.tag == "Prop"))
-            {
-				var pushObj = forwardCast.collider.gameObject.GetComponent<PushableObject>();
-				pushObj.Push(trans.forward);
-				pushing = true;
+    //    //Torso Hit Confirmed
+    //    if (Physics.Raycast(new Vector3(t.x, t.y + torsoOffset, t.z), fwd, out forwardCast, .8f)
+    //        && direction.y < 2)
+    //    {
+    //        if ((forwardCast.collider.GetType() == typeof(BoxCollider)) && (forwardCast.collider.tag == "Prop"))
+    //        {
+    //            var pushObj = forwardCast.collider.gameObject.GetComponent<PushableObject>();
+    //            pushObj.Push(trans.forward);
+    //            pushing = true;
 
-	            anim.Blend("Push");
-	            trans.rotation = Quaternion.LookRotation(new Vector3(-forwardCast.normal.x,0,-forwardCast.normal.z));
-				pushing = false;
-			}
-        }
-        else
-            pushing = false;
+    //            anim.Blend("Push");
+    //            trans.rotation = Quaternion.LookRotation(new Vector3(-forwardCast.normal.x,0,-forwardCast.normal.z));
+    //            pushing = false;
+    //        }
+    //    }
+    //    else
+    //        pushing = false;
 		
-        Debug.DrawRay(new Vector3(t.x, t.y + torsoOffset, t.z), fwd, Color.blue);
-	}
+    //    Debug.DrawRay(new Vector3(t.x, t.y + torsoOffset, t.z), fwd, Color.blue);
+    //}
 	
 	/// <summary>
 	/// 	Recieves the input from the axes
@@ -193,7 +185,7 @@ public class Player : CharacterBasics {
 	
 	public void Update()
 	{
-		Movement();
+        BaseMovement(new Vector3(InputMovement().x, 0, InputMovement().y), InputMovement().magnitude );
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			Launch();

@@ -25,8 +25,6 @@ public class CharacterBasics : MonoBehaviour {
 	#region Bool List (Oh NOES!)
 	public bool attacking = false;
 	public bool falling = false;
-	public bool pushing = false;
-	public bool gliding = false;
 	public bool jumping = false;
 	#endregion
 	
@@ -44,7 +42,6 @@ public class CharacterBasics : MonoBehaviour {
 		controller = GetComponent<CharacterController>();
 		trans = this.transform;
         anim = GetComponent<Animation>();
-		//stats = gameObject.AddComponent<GustStats>();
 	}
 	
 	//The Animation component of the character
@@ -56,7 +53,7 @@ public class CharacterBasics : MonoBehaviour {
 			if (speed > maxSpeed / 2)
 	        {
 	            //if we are coming from idle or walk ;; force chance
-	            if (anim.IsPlaying(walk) || anim.IsPlaying(idle) && !pushing)
+	            if (anim.IsPlaying(walk) || anim.IsPlaying(idle))
 	                anim.CrossFade(run);
 	
 	            //if we are already playing out anim ;; wait till its over, then play again
@@ -99,7 +96,7 @@ public class CharacterBasics : MonoBehaviour {
 		}
 		
 		#region Falling
-		if (falling && (!controller.isGrounded && !attacking && !gliding))	
+		if (falling && (!controller.isGrounded && !attacking))	
 		{
 			  if (!anim.IsPlaying(fall))
                  anim.Blend(fall);
@@ -107,35 +104,14 @@ public class CharacterBasics : MonoBehaviour {
                  anim.Play(fall);
 		}
 		#endregion
-
-		#region Gliding
-		if (gliding && (!controller.isGrounded && !attacking))
-		{
-			if (speed != 0)
-	        {
-	            if (!anim.IsPlaying(glide))
-	                anim.Blend(glide);
-	            else if (!anim.isPlaying)
-	                anim.Blend(glide);
-	        }
-			else
-				 anim.Blend(fall);
-		}
-		#endregion
     }
 	
 	#region Physics
 	
-//		var velocity = direction;
-//				
-//		velocity.y = direction.y;
-//		direction.y = velocity.y;
-//		
-//		direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;	
 		
 	protected virtual void Gravity()
 	{
-		RaycastHit hit;
+		    RaycastHit hit;
 			Vector3 down = new Vector3(trans.position.x, trans.position.y - 2f, trans.position.z);
 			Debug.DrawLine(trans.position, down, Color.cyan);
 			
@@ -160,24 +136,50 @@ public class CharacterBasics : MonoBehaviour {
 			}
 			
 			//Needed to make the corresponding animations work
-			if (controller.isGrounded || ledgehanging)
+			if (controller.isGrounded)
 			{
 				jumping = false;
 				falling = false;
-				//canLedgehang = true;
 			}
 		
-			//Allows for jumping
-			if (controller.isGrounded) 
-			{
-				//Jumping
-		        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton1))
-				{
-		         	//justJumped = true;
-					Launch();
-			}
-		}
+            ////Allows for jumping
+            //if (controller.isGrounded) 
+            //{
+            //        //justJumped = true;
+            //        Launch();
+            //}
 	}
+
+    public virtual void BaseMovement(Vector3 direction, float speed)
+    {
+        targetSpeed = (speed != 0) ? maxSpeed : 0;
+
+        if (speed > 0.9f)
+            trans.forward = new Vector3(direction.x, 0, direction.z);
+
+
+        //Lerping of speed, etc.
+        //////////////////////////////////////
+        //Catch the current vertical movement (for jumping/falling)
+        var _holdTheJump = direction.y;
+
+        //Don't want our character pointing up if we jump
+        direction.y = 0;
+
+        //We only want direction at this point
+        direction.Normalize();
+
+        //This is our "friction"
+        speed = Mathf.Lerp(speed, targetSpeed, accelerationSpeed);
+
+        //If we've got a signification magnitude, continue moving forward ;; if were are recieving movement, apply it 
+        direction = (speed > .9f) ? new Vector3(direction.x * speed, _holdTheJump, direction.z * speed)
+                                              : new Vector3(trans.forward.x * speed, _holdTheJump, trans.forward.z * speed);
+
+        Gravity();
+
+        controller.Move(direction * Time.deltaTime);
+    }
 
 
 	
@@ -205,12 +207,13 @@ public class CharacterBasics : MonoBehaviour {
 		direction.y = _force;
 	}
 	
-	public void Rush(Vector3 dir, float amount)
+	public void Rush(Vector3 _dir, float _amount)
 	{
-		force = dir * amount;
+		force = _dir * _amount;
 	}
 	#endregion
-		/// <summary>
+    
+    /// <summary>
     /// Flash this character
     /// </summary>
     /// <returns></returns>
