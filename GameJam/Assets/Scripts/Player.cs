@@ -26,7 +26,7 @@ public class Player : CharacterBasics {
 	public void Update()
 	{
         BaseMovement(InputMovement(), InputMovement().magnitude );
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetKeyDown(KeyCode.Space)  || Input.GetKeyDown(KeyCode.JoystickButton1))
 		{
 			base.Launch();
 		}
