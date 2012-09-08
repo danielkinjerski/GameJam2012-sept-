@@ -1,0 +1,21 @@
+# Ignore the contributor's local assets folder, subfolders, and files
+lilSherman/Assets/~Local/*
+lilSherman/Assets/~Local/**/*
+
+# Ignore Library files
+lilSherman/Library/*
+lilSherman/Library/**/*
+
+# Ignore local build files
+lilSherman/obj/*
+lilSherman/obj/**/*
+lilSherman/Temp/*
+lilSherman/Temp/**/*
+
+# Ignore local project files
+lilSherman/*.csproj
+lilSherman/*.pidb
+lilSherman/*.sln
+lilSherman/*.suo
+lilSherman/*.unityproj
+lilSherman/*.userprefs
