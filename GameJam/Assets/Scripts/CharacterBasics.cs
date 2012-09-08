@@ -2,15 +2,12 @@ using UnityEngine;
 using System.Collections;
 
 public class CharacterBasics : MonoBehaviour {
+
+    private float speed, targetSpeed;
 	
-	public float speed, maxSpeed = 8, targetSpeed, accelerationSpeed = 1f, gravity = 20;
-	
-    public Vector3 direction, force, velocity;
-	
-	public float jumpHeight;
-	
-	public Color normalColor;
-	public bool ledgehanging;
+    private Vector3 direction, force, velocity;
+
+    public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
 	
 	
 	#region Animation Names
@@ -18,21 +15,18 @@ public class CharacterBasics : MonoBehaviour {
 	public string run = "Run";
 	public string idle = "Idle_Chilling";
 	public string fall = "Falling_Pose";
-	public string glide = "Gliding";
 	public string jump = "Jump";
 	#endregion
 	
 	#region Bool List (Oh NOES!)
-	public bool attacking = false;
-	public bool falling = false;
-	public bool jumping = false;
+	private bool attacking = false, falling = false, jumping = false;
 	#endregion
 	
 	#region Important
-	public Transform trans;
-	public CharacterController controller;
-	public Animation anim;
-	public SkinnedMeshRenderer mesh;
+	protected Transform trans;
+	protected CharacterController controller;
+	protected Animation anim;
+	protected SkinnedMeshRenderer mesh;
 	#endregion
 	
 	
@@ -131,7 +125,7 @@ public class CharacterBasics : MonoBehaviour {
 					falling = true;
 				}
 				//direction.y = velocity.y;
-				
+
 				direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;
 			}
 			
@@ -141,44 +135,56 @@ public class CharacterBasics : MonoBehaviour {
 				jumping = false;
 				falling = false;
 			}
-		
-            ////Allows for jumping
-            //if (controller.isGrounded) 
-            //{
-            //        //justJumped = true;
-            //        Launch();
-            //}
 	}
 
-    public virtual void BaseMovement(Vector3 direction, float speed)
+    /// <summary>
+    /// Basic movment function
+    /// </summary>
+    /// <param name="input">Direction (x,z)</param>
+    /// <param name="speed">Speed (0 - 1) where 1 is max speed</param>
+    public virtual bool BaseMovement(Vector2 input, float speed)
     {
+        //build our movement vector
+        Vector3 moveDir = new Vector3(input.x,direction.y,input.y);
+
+        //prevent snapping forward
+        if (moveDir.x == 0 && moveDir.z == 0)
+            moveDir = new Vector3(trans.forward.x, direction.y, trans.forward.z);
+
         targetSpeed = (speed != 0) ? maxSpeed : 0;
 
         if (speed > 0.9f)
-            trans.forward = new Vector3(direction.x, 0, direction.z);
+            trans.forward = new Vector3(moveDir.x, 0, moveDir.z);
 
 
         //Lerping of speed, etc.
         //////////////////////////////////////
         //Catch the current vertical movement (for jumping/falling)
-        var _holdTheJump = direction.y;
-
+        var _holdTheJump = moveDir.y;
+        print(_holdTheJump);
         //Don't want our character pointing up if we jump
-        direction.y = 0;
+        moveDir.y = 0;
 
         //We only want direction at this point
-        direction.Normalize();
+        moveDir.Normalize();
+
+        if (Vector3.Dot(moveDir, trans.forward) < .5f)
+            trans.forward = Vector3.Lerp(trans.forward, moveDir, 1 / speed);
+        else
+            trans.forward = new Vector3(moveDir.x, 0, moveDir.z);
 
         //This is our "friction"
         speed = Mathf.Lerp(speed, targetSpeed, accelerationSpeed);
 
         //If we've got a signification magnitude, continue moving forward ;; if were are recieving movement, apply it 
-        direction = (speed > .9f) ? new Vector3(direction.x * speed, _holdTheJump, direction.z * speed)
+        direction = (speed > .9f) ? new Vector3(moveDir.x * speed, _holdTheJump, moveDir.z * speed)
                                               : new Vector3(trans.forward.x * speed, _holdTheJump, trans.forward.z * speed);
 
         Gravity();
 
         controller.Move(direction * Time.deltaTime);
+
+        return (speed == 0)? false: true;
     }
 
 
@@ -188,12 +194,9 @@ public class CharacterBasics : MonoBehaviour {
 	/// </summary>
 	public void Launch()
 	{
-		if (controller.isGrounded)
-        {
             direction.y = jumpHeight;
             //anim.CrossFade(jump, .01f);
 			jumping = true;
-        }
 	}
 	
 	/// <summary>
@@ -221,7 +224,7 @@ public class CharacterBasics : MonoBehaviour {
     {
           mesh.material.SetColor("_Ambient", Color.white);
           yield return new WaitForSeconds(.1f);
-          mesh.material.SetColor("_Ambient", normalColor);
+          //mesh.material.SetColor("_Ambient", normalColor);
     }
 	
 }
