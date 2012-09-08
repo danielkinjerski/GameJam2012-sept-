@@ -16,7 +16,6 @@ class SpriteAnimation : MonoBehaviour
     public int columns = 2;
     public int rows = 2;
     public float framesPerSecond = 10f;
-	// THIS IS AN IRRELEVANT COMMENT
 
 
     //the current frame to display
