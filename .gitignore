@@ -1,21 +1,21 @@
 # Ignore the contributor's local assets folder, subfolders, and files
-lilSherman/Assets/~Local/*
-lilSherman/Assets/~Local/**/*
+GameJam/Assets/~Local/*
+GameJam/Assets/~Local/**/*
 
 # Ignore Library files
-lilSherman/Library/*
-lilSherman/Library/**/*
+GameJam/Library/*
+GameJam/Library/**/*
 
 # Ignore local build files
-lilSherman/obj/*
-lilSherman/obj/**/*
-lilSherman/Temp/*
-lilSherman/Temp/**/*
+GameJam/obj/*
+GameJam/obj/**/*
+GameJam/Temp/*
+GameJam/Temp/**/*
 
 # Ignore local project files
-lilSherman/*.csproj
-lilSherman/*.pidb
-lilSherman/*.sln
-lilSherman/*.suo
-lilSherman/*.unityproj
-lilSherman/*.userprefs
+GameJam/*.csproj
+GameJam/*.pidb
+GameJam/*.sln
+GameJam/*.suo
+GameJam/*.unityproj
+GameJam/*.userprefs
