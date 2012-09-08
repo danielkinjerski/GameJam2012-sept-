@@ -5,7 +5,7 @@ public class CharacterBasics : MonoBehaviour {
 
     private float speed, targetSpeed;
 	
-    private Vector3 direction, force, velocity;
+    public Vector3 direction, force, velocity;
 
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
 	
@@ -19,7 +19,7 @@ public class CharacterBasics : MonoBehaviour {
 	#endregion
 	
 	#region Bool List (Oh NOES!)
-	private bool attacking = false, falling = false, jumping = false;
+	public bool attacking = false, falling = false, jumping = false;
 	#endregion
 	
 	#region Important
@@ -101,47 +101,47 @@ public class CharacterBasics : MonoBehaviour {
     }
 	
 	#region Physics
-	
 		
 	protected virtual void Gravity()
 	{
-		    RaycastHit hit;
-			Vector3 down = new Vector3(trans.position.x, trans.position.y - 2f, trans.position.z);
-			Debug.DrawLine(trans.position, down, Color.cyan);
-			
-			//If not on the ground, assume normal gravity
-	        if (!controller.isGrounded && jumping)	
-			{
-				direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;
-				if (direction.y < 1)
-					falling = true;
-			}
-			else
-			if (!Physics.Raycast(trans.position, Vector3.down, out hit,2f) && !jumping)
-			{			
-				if (!falling)
-				{
-					direction.y = 0;
-					falling = true;
-				}
-				//direction.y = velocity.y;
 
-				direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;
-			}
-			
-			//Needed to make the corresponding animations work
-			if (controller.isGrounded)
-			{
-				jumping = false;
-				falling = false;
-			}
+        //If not on the ground, assume normal gravity
+        if (!controller.isGrounded)
+        {
+            RaycastHit hit;
+            Vector3 down = new Vector3(trans.position.x, trans.position.y - 2f, trans.position.z);
+            Debug.DrawLine(trans.position, down, Color.cyan);
+
+            if (!Physics.Raycast(trans.position, Vector3.down, out hit, 2f) && !jumping)
+            {
+
+            }
+            direction.y -= (direction.y > -gravity) ? gravity * Time.deltaTime : 0;
+        }
+        else
+        {
+            if (direction.y != 0 && falling)
+            {
+                falling = false;
+                direction.y = 0;
+            }
+        }
+
+        //Needed to make the corresponding animations work
+        if (controller.isGrounded)
+        {
+            jumping = false;
+            falling = false;
+        }
 	}
+
 
     /// <summary>
     /// Basic movment function
     /// </summary>
     /// <param name="input">Direction (x,z)</param>
     /// <param name="speed">Speed (0 - 1) where 1 is max speed</param>
+    /// <returns>true if we are moving false if we are not</returns>
     public virtual bool BaseMovement(Vector2 input, float speed)
     {
         //build our movement vector
@@ -151,6 +151,7 @@ public class CharacterBasics : MonoBehaviour {
         if (moveDir.x == 0 && moveDir.z == 0)
             moveDir = new Vector3(trans.forward.x, direction.y, trans.forward.z);
 
+        //are we accelerationg or decelerating?
         targetSpeed = (speed != 0) ? maxSpeed : 0;
 
         if (speed > 0.9f)
@@ -161,7 +162,7 @@ public class CharacterBasics : MonoBehaviour {
         //////////////////////////////////////
         //Catch the current vertical movement (for jumping/falling)
         var _holdTheJump = moveDir.y;
-        print(_holdTheJump);
+
         //Don't want our character pointing up if we jump
         moveDir.y = 0;
 
@@ -179,11 +180,12 @@ public class CharacterBasics : MonoBehaviour {
         //If we've got a signification magnitude, continue moving forward ;; if were are recieving movement, apply it 
         direction = (speed > .9f) ? new Vector3(moveDir.x * speed, _holdTheJump, moveDir.z * speed)
                                               : new Vector3(trans.forward.x * speed, _holdTheJump, trans.forward.z * speed);
-
+        //apply gravity
         Gravity();
 
         controller.Move(direction * Time.deltaTime);
 
+        //are we still moving?
         return (speed == 0)? false: true;
     }
 
@@ -194,9 +196,12 @@ public class CharacterBasics : MonoBehaviour {
 	/// </summary>
 	public void Launch()
 	{
+        if (controller.isGrounded)
+        {
             direction.y = jumpHeight;
             //anim.CrossFade(jump, .01f);
-			jumping = true;
+            jumping = true;
+        }
 	}
 	
 	/// <summary>
@@ -207,6 +212,7 @@ public class CharacterBasics : MonoBehaviour {
 	/// </param>
 	public virtual void Launch(float _force)
 	{
+
 		direction.y = _force;
 	}
 	
