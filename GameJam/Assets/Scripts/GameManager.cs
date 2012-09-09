@@ -21,8 +21,9 @@ public class GameManager : MonoBehaviour
     #region Variables
 
     public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
-                    BlackWorld, WhiteWorld, 
-                    BlackCam, WhiteCam, MainCam;
+                    BlackWorld, WhiteWorld,
+                    BlackCam, WhiteCam, MainCam,
+                    Facebook;
     public Material BlackMat, WhiteMat;
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
 
         MainCam.camera.rect = BlackCam.camera.rect = new Rect(0, 0, 1, 1);
         MainCam.active = false;
+        Facebook.active = true;
 
 	
 	}
@@ -114,7 +116,10 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.White;
     }
-    
+    void FaceBook()
+    {
+        Facebook.SendMessage("GrabToken");
+    }
     void Pause()
     {
         gameState = GameState.Pause;

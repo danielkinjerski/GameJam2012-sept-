@@ -10,7 +10,7 @@ public class CharacterBasics : MonoBehaviour
     private Vector3 direction, force, velocity, respawn;
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
 	public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump";
-	private bool attacking = false, falling = false, jumping = false;
+	public bool attacking = false, falling = false, jumping = false;
 
 	protected Transform trans;
 	protected CharacterController controller;
@@ -32,54 +32,12 @@ public class CharacterBasics : MonoBehaviour
         anim = this.animation;
         anim[jump].wrapMode = WrapMode.Clamp;
         respawn = transform.position;
+        manager = GameObject.Find("GameManager");
 	}
 
     #endregion
 
     #region Player Updates
-    /// <summary>
-	/// Animation controller
-	/// </summary>
-    public virtual void AnimationFramework()
-    {
-            #region Falling
-            if(jumping){}
-            else if (falling)
-            {
-                print("fall");
-                if (!anim.IsPlaying(fall))
-                    anim.Blend(fall);
-                else if (!anim.isPlaying)
-                    anim.Play(fall);
-            }
-            #endregion
-
-            #region Walk
-            else if (speed > 0)
-            {
-                print("walk");
-                //if we are coming from idle or run ;; force chance
-                if (!anim.IsPlaying(walk))
-                    anim.CrossFade(walk);
-                //if we are already playing out anim ;; wait till its over, then play again
-                else if (!anim.isPlaying)
-                    anim.Play(walk);
-            }
-            #endregion
-
-            #region Idle
-            else if (speed == 0)
-            {
-                print("Idle");
-                //if we are playing any other animation of than idle ;; force chance
-                if (!anim.IsPlaying(idle))
-                    anim.CrossFade(idle);
-                //if nothing is playing ;; play again
-                else if (!anim.isPlaying)
-                    anim.Play(idle);
-            }
-            #endregion
-    }
 		
 	protected virtual void Gravity()
 	{
@@ -126,7 +84,45 @@ public class CharacterBasics : MonoBehaviour
     /// <returns>true if we are moving false if we are not</returns>
     public virtual bool BaseMovement(Vector2 input, float speed)
     {
-        AnimationFramework();
+        #region Animation
+
+        #region Falling
+        if (jumping) { }
+        else if (falling)
+        {
+            if (!anim.IsPlaying(fall))
+                anim.Blend(fall);
+            else if (!anim.isPlaying)
+                anim.Play(fall);
+        }
+        #endregion
+
+        #region Walk
+        else if (speed > 0)
+        {
+            print("walk");
+            //if we are coming from idle or run ;; force chance
+            if (!anim.IsPlaying(walk))
+                anim.Play(walk);
+            //if we are already playing out anim ;; wait till its over, then play again
+            else if (!anim.isPlaying)
+                anim.Play(walk);
+        }
+        #endregion
+
+        #region Idle
+        else if (speed == 0)
+        {
+            //if we are playing any other animation of than idle ;; force chance
+            if (!anim.IsPlaying(idle))
+                anim.CrossFade(idle);
+            //if nothing is playing ;; play again
+            else if (!anim.isPlaying)
+                anim.Play(idle);
+        }
+        #endregion
+
+        #endregion
 
         //build our movement vector
         Vector3 moveDir = new Vector3(input.x,direction.y,input.y);
