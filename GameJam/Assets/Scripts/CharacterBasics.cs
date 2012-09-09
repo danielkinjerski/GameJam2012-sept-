@@ -195,12 +195,6 @@ public class CharacterBasics : MonoBehaviour {
         //are we still moving?
         return (speed == 0)? false: true;
     }
-
-    public virtual void Update()
-    {
-        if (GameManager.gameState != GameState.PlayGame)
-            return;
-    }
 	
 	/// <summary>
 	/// Used for jumping and launching

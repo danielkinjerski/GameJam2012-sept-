@@ -18,12 +18,12 @@ public class GameManager : MonoBehaviour {
     public Material BlackMat, WhiteMat;
     public static GameState gameState;
     public static CurrentPlayMode currentPlayMode;
-    private bool blackOn, whiteOn;
+    private bool toggle;
 
 	// Use this for initialization
 	void Awake () {
-        BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, .5f);
-        WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, .5f);
+        BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1f);
+        WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1f);
         gameState = GameState.OpeningWindow;
         OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
@@ -36,15 +36,23 @@ public class GameManager : MonoBehaviour {
         WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1);
     }
 	
-	// Update is called once per frame
-	void Update () {       
-            
+	void Update () {
+
+        if (toggle)
+        {
+            if (currentPlayMode == CurrentPlayMode.Black)
+            {
+                if (Toggle(ref BlackMat, true) && Toggle(ref WhiteMat, false))
+                    toggle = false;
+            }
+            else if (currentPlayMode == CurrentPlayMode.White)
+            {
+                if (Toggle(ref BlackMat, true) && Toggle(ref WhiteMat, false))
+                    toggle = false;
+            }
+        }
 	}
-    void Toggle(ref Material mat, bool pulse)
-    {
-        //if (mat.color.a <= .2f || mat.color.a >= 1f) { pulse = !pulse; }    
-        mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, (pulse) ? (mat.color.a - .005f) : (mat.color.a + .005f));
-    }
+
     void Play()
     {
         gameState = GameState.PlayGame;
@@ -75,11 +83,25 @@ public class GameManager : MonoBehaviour {
                 break;
             case CurrentPlayMode.White :
                 WhiteMode(true);
-                BlackMode(true);
+                BlackMode(false);
                 currentPlayMode = CurrentPlayMode.Black;
                 break;
         }
+        toggle = true;
     }
+
+    bool Toggle(ref Material mat, bool pulse)
+    {
+        //if (mat.color.a <= .2f || mat.color.a >= 1f) { pulse = !pulse; }    
+        mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, (pulse) ? (mat.color.a - .005f) : (mat.color.a + .005f));
+
+        if ((mat.color.a <= 0 && !pulse)|| (mat.color.a >= 1 && !pulse))
+            return true;
+        else
+            return false;
+
+    }
+
     void BlackMode(bool active)
     {
         BlackWorld.SetActiveRecursively(active);
