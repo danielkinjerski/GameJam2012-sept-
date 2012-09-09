@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
                     BlackWorld, WhiteWorld,
                     BlackCam, WhiteCam, MainCam,
-                    Facebook,
+                    Facebook, fbbutton, fbsuccess,
                     Character;
     public Material BlackMat, WhiteMat, CharMat;
     public Texture2D blackTexture, whiteTexture;
@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
         OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         SelectionWindow.SetActiveRecursively(false);
+        fbsuccess.active = false;
 
         //WhiteCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
         //BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
@@ -122,6 +123,16 @@ public class GameManager : MonoBehaviour
     {
         Facebook.SendMessage("GetToken");
     }
+    void PostResults()
+    {
+        print("stuff");
+        Facebook.GetComponent<Facebook>().Publish("I died 25 millun times and took played for 3 minutes");
+    }
+    void SuccessFacebookLink()
+    {
+        fbbutton.SetActiveRecursively(false);
+        fbsuccess.active = true;
+    }
     void Pause()
     {
         gameState = GameState.Pause;
@@ -135,7 +146,8 @@ public class GameManager : MonoBehaviour
     void Replay()
     {
         Character.SetActiveRecursively(true);
-        Character.SendMessage("Restart");
+        GameOverWindow.SetActiveRecursively(false);
+        gameState = GameState.PlayGame;
     }
     #endregion
 

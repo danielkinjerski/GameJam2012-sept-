@@ -7,12 +7,12 @@ public class CharacterBasics : MonoBehaviour
     #region Variables
 
     private float speed, targetSpeed;
-    private Vector3 direction, force, velocity, respawn;
+    private Vector3 direction, force, velocity, respawn, initialPos, initialRot;
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
 	public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump";
 	public bool attacking = false, falling = false, jumping = false;
 
-    protected Transform trans, initial;
+    public Transform trans;
 	protected CharacterController controller;
 	protected Animation anim = new Animation();
 	protected SkinnedMeshRenderer mesh;
@@ -28,7 +28,9 @@ public class CharacterBasics : MonoBehaviour
 	protected virtual void Start () 
 	{
 		controller = GetComponent<CharacterController>();
-        trans = initial = this.transform;
+        trans = this.transform;
+        initialPos = trans.position;
+        initialRot = trans.rotation.eulerAngles;
         anim = this.animation;
         anim[jump].wrapMode = WrapMode.Clamp;
         respawn = transform.position;
@@ -225,15 +227,12 @@ public class CharacterBasics : MonoBehaviour
         else
         {
             manager.SendMessage("GameOver");
+            trans.position = initialPos;
+            trans.rotation = Quaternion.Euler(initialRot);
             gameObject.SetActiveRecursively(false);
         }
     }
 
-    void Restart()
-    {
-        this.ForceStopEverything();
-        trans = initial;
-    }
     #endregion
 
 }
