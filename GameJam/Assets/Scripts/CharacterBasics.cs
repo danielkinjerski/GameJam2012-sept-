@@ -98,9 +98,8 @@ public class CharacterBasics : MonoBehaviour
         #endregion
 
         #region Walk
-        else if (speed > 0)
+        else if (speed > 0&&!falling&&!jumping)
         {
-            print("walk");
             //if we are coming from idle or run ;; force chance
             if (!anim.IsPlaying(walk))
                 anim.Play(walk);
@@ -111,7 +110,7 @@ public class CharacterBasics : MonoBehaviour
         #endregion
 
         #region Idle
-        else if (speed == 0)
+        else if (speed == 0 && !falling && !jumping)
         {
             //if we are playing any other animation of than idle ;; force chance
             if (!anim.IsPlaying(idle))
