@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
                     BlackWorld, WhiteWorld,
                     BlackCam, WhiteCam, MainCam,
-                    Facebook;
+                    Facebook,
+                    Character;
     public Material BlackMat, WhiteMat;
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
@@ -132,7 +133,8 @@ public class GameManager : MonoBehaviour
     }
     void Replay()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        Character.SetActiveRecursively(true);
+        Character.SendMessage("Restart");
     }
     #endregion
 

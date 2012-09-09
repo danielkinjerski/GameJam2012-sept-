@@ -12,7 +12,7 @@ public class CharacterBasics : MonoBehaviour
 	public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump";
 	public bool attacking = false, falling = false, jumping = false;
 
-	protected Transform trans;
+    protected Transform trans, initial;
 	protected CharacterController controller;
 	protected Animation anim = new Animation();
 	protected SkinnedMeshRenderer mesh;
@@ -28,7 +28,7 @@ public class CharacterBasics : MonoBehaviour
 	protected virtual void Start () 
 	{
 		controller = GetComponent<CharacterController>();
-		trans = this.transform;
+        trans = initial = this.transform;
         anim = this.animation;
         anim[jump].wrapMode = WrapMode.Clamp;
         respawn = transform.position;
@@ -225,8 +225,14 @@ public class CharacterBasics : MonoBehaviour
         else
         {
             manager.SendMessage("GameOver");
-            Destroy(this.gameObject);
+            gameObject.SetActiveRecursively(false);
         }
+    }
+
+    void Restart()
+    {
+        this.ForceStopEverything();
+        trans = initial;
     }
     #endregion
 
