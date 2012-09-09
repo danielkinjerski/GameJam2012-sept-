@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour
                     BlackCam, WhiteCam, MainCam,
                     Facebook,
                     Character;
-    public Material BlackMat, WhiteMat;
+    public Material BlackMat, WhiteMat, CharMat;
+    public Texture2D blackTexture, whiteTexture;
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
     private bool toggle;
@@ -119,7 +120,7 @@ public class GameManager : MonoBehaviour
     }
     void FaceBook()
     {
-        Facebook.SendMessage("GrabToken");
+        Facebook.SendMessage("GetToken");
     }
     void Pause()
     {
@@ -171,14 +172,20 @@ public class GameManager : MonoBehaviour
     {
         BlackWorld.SetActiveRecursively(active);
         if (active)
+        {
             MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
+            CharMat.mainTexture = blackTexture;
+        }
         
     }
     void ActivateWhiteMode(bool active)
     {
         WhiteWorld.SetActiveRecursively(active);
         if (active)
+        {
             MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
+            CharMat.mainTexture = whiteTexture;
+        }
     }
 
     void OnApplicationQuit()
