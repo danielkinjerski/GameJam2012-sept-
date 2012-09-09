@@ -5,7 +5,7 @@ public class CharacterBasics : MonoBehaviour {
 
     private float speed, targetSpeed;
 	
-    public Vector3 direction, force, velocity;
+    private Vector3 direction, force, velocity;
 
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
 	
@@ -19,7 +19,7 @@ public class CharacterBasics : MonoBehaviour {
 	#endregion
 	
 	#region Bool List (Oh NOES!)
-	public bool attacking = false, falling = false, jumping = false;
+	private bool attacking = false, falling = false, jumping = false;
 	#endregion
 	
 	#region Important
