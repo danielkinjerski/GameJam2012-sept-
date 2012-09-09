@@ -5,27 +5,20 @@ public class Player : CharacterBasics {
 	
 	#region Fields
 
-    private GameObject manager;
     private Vector3 respawn;
 	
 	#endregion
 
+    #region Mono Inherit Functions
+
     private void Start()
     {
+        base.Start();
         manager = GameObject.Find("GameManager");
-        respawn = transform.position;
+
     }
 	
-	/// <summary>
-	/// 	Recieves the input from the axes
-	/// </summary>
-	/// <returns>
-	/// The movement.
-	/// </returns>
-	private Vector2 InputMovement()
-    {
-        return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-    }
+
 	
 	public void Update()
 	{
@@ -45,10 +38,22 @@ public class Player : CharacterBasics {
         }
 	}
 
-    void Respawn()
+    #endregion
+
+    #region Utilities
+
+    /// <summary>
+    /// Recieves the input from the axes
+    /// </summary>
+    /// <returns>
+    /// The movement.
+    /// </returns>
+    private Vector2 InputMovement()
     {
-        this.ForceStopEverything();
-        this.transform.position = respawn;
+        return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
     }
+
+    #endregion
+
 
 }
