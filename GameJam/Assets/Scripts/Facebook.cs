@@ -54,6 +54,7 @@ public class Facebook : MonoBehaviour {
 			string error = data["error"].str;
 			if(error == "" || error == null){
 				this.token = data["token"].str;
+                this.gameObject.SendMessageUpwards("SuccessFacebookLink");
 			}
 			i++;
 		}

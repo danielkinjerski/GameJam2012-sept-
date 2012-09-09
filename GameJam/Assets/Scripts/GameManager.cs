@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
     private bool toggle;
     public bool cheats;
+    private int deaths;
+    private float time;
 
     #endregion
 
@@ -98,6 +100,7 @@ public class GameManager : MonoBehaviour
         BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
+        time = Time.timeSinceLevelLoad;
     }
     void Black() 
     {
@@ -108,6 +111,7 @@ public class GameManager : MonoBehaviour
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.Black;
+        time = Time.timeSinceLevelLoad;
     }
     void White() 
     {
@@ -118,6 +122,7 @@ public class GameManager : MonoBehaviour
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.White;
+        time = Time.timeSinceLevelLoad;
     }
     void FaceBook()
     {
@@ -125,13 +130,16 @@ public class GameManager : MonoBehaviour
     }
     void PostResults()
     {
-        print("stuff");
-        Facebook.GetComponent<Facebook>().Publish("I died 25 millun times and took played for 3 minutes");
+        float timer = Time.timeSinceLevelLoad - time;
+        string minutes = Mathf.Floor(timer / 60).ToString("00");
+        string seconds = (timer % 60).ToString("00");
+        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" times and played for " + minutes + " minutes " + seconds + " seconds!"  );
     }
     void SuccessFacebookLink()
     {
+        if (fbbutton.active)
+            fbsuccess.active = true;
         fbbutton.SetActiveRecursively(false);
-        fbsuccess.active = true;
     }
     void Pause()
     {
@@ -139,15 +147,24 @@ public class GameManager : MonoBehaviour
     }
     void GameOver()
     {
+        deaths++;
+        float timer = Time.timeSinceLevelLoad - time;
+        string minutes = Mathf.Floor(timer / 60).ToString("00");
+        string seconds = (timer % 60).ToString("00");
         gameState = GameState.GameOver;
         OpeningWindow.SetActiveRecursively(false);
         GameOverWindow.SetActiveRecursively(true);
+        UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
+        UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
+        deathLbl.text = deathLbl.text.Replace("0", deaths.ToString());
+        timeLbl.text = timeLbl.text.Replace("0", minutes + " minutes " + seconds + " seconds");
     }
     void Replay()
     {
         Character.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
+        time = Time.timeSinceLevelLoad;
     }
     #endregion
 
