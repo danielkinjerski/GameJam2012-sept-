@@ -3,22 +3,7 @@ using System.Collections;
 
 public class Player : CharacterBasics {
 	
-	#region Fields
-
-    private Vector3 respawn;
-	
-	#endregion
-
     #region Mono Inherit Functions
-
-    private void Start()
-    {
-        base.Start();
-        manager = GameObject.Find("GameManager");
-
-    }
-	
-
 	
 	public void Update()
 	{
@@ -33,7 +18,6 @@ public class Player : CharacterBasics {
 		}
         if (Input.GetKeyUp(KeyCode.X))
         {
-            respawn = transform.position;
             manager.SendMessage("Switch");
         }
 	}

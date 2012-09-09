@@ -32,6 +32,7 @@ public class CharacterBasics : MonoBehaviour
         anim = this.animation;
         anim[jump].wrapMode = WrapMode.Clamp;
         respawn = transform.position;
+        manager = GameObject.Find("GameManager");
 	}
 
     #endregion
@@ -46,7 +47,6 @@ public class CharacterBasics : MonoBehaviour
             if(jumping){}
             else if (falling)
             {
-                print("fall");
                 if (!anim.IsPlaying(fall))
                     anim.Blend(fall);
                 else if (!anim.isPlaying)
@@ -57,7 +57,6 @@ public class CharacterBasics : MonoBehaviour
             #region Walk
             else if (speed > 0)
             {
-                print("walk");
                 //if we are coming from idle or run ;; force chance
                 if (!anim.IsPlaying(walk))
                     anim.CrossFade(walk);
@@ -70,7 +69,6 @@ public class CharacterBasics : MonoBehaviour
             #region Idle
             else if (speed == 0)
             {
-                print("Idle");
                 //if we are playing any other animation of than idle ;; force chance
                 if (!anim.IsPlaying(idle))
                     anim.CrossFade(idle);
