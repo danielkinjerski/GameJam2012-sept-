@@ -6,12 +6,14 @@ public class Player : CharacterBasics {
 	#region Fields
 
     private GameObject manager;
+    private Vector3 respawn;
 	
 	#endregion
 
     private void Start()
     {
         manager = GameObject.Find("GameManager");
+        respawn = transform.position;
     }
 	
 	/// <summary>
@@ -38,7 +40,15 @@ public class Player : CharacterBasics {
 		}
         if (Input.GetKeyUp(KeyCode.X))
         {
+            respawn = transform.position;
             manager.SendMessage("Switch");
         }
 	}
+
+    void Respawn()
+    {
+        this.ForceStopEverything();
+        this.transform.position = respawn;
+    }
+
 }

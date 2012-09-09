@@ -14,7 +14,9 @@ public  enum CurrentPlayMode
 }
 public class GameManager : MonoBehaviour {
 
-    public GameObject OpeningWindow, GameOverWindow, BlackWorld, WhiteWorld, BlackCam, WhiteCam;
+    public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
+                    BlackWorld, WhiteWorld, 
+                    BlackCam, WhiteCam, MainCam;
     public Material BlackMat, WhiteMat;
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
@@ -26,8 +28,10 @@ public class GameManager : MonoBehaviour {
         gameState = GameState.OpeningWindow;
         OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
+        SelectionWindow.SetActiveRecursively(false);
 
         WhiteCam.camera.rect = BlackCam.camera.rect = new Rect(0, 0, 1, 1);
+        BlackCam.active = false;
         //WhiteCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
         //BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
 	
@@ -50,8 +54,8 @@ public class GameManager : MonoBehaviour {
                 if (Toggle(ref WhiteMat, true)&&Toggle(ref BlackMat, false))
                 {
                     print("done");
-                    toggle = false;                    
-                    ActiveBlackMode(false);
+                    toggle = false;
+                    ActivateBlackMode(false);
                     GameManager.currentPlayMode = CurrentPlayMode.White;
                 }
             }
@@ -71,9 +75,32 @@ public class GameManager : MonoBehaviour {
 
     void Play()
     {
-        gameState = GameState.PlayGame;
         OpeningWindow.SetActiveRecursively( false );
+        SelectionWindow.SetActiveRecursively(true);
     }
+
+    void Gray() 
+    {
+        WhiteCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
+        BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
+        SelectionWindow.SetActiveRecursively(false);
+        gameState = GameState.PlayGame;
+    }
+    void Black() 
+    {
+        ActivateWhiteMode(false);
+        ActivateBlackMode(true);
+        SelectionWindow.SetActiveRecursively(false);
+        gameState = GameState.PlayGame;
+    }
+    void White() 
+    {
+        ActivateBlackMode(false);
+        ActivateWhiteMode(true);
+        SelectionWindow.SetActiveRecursively(false);
+        gameState = GameState.PlayGame;
+    }
+    
     void Pause()
     {
         gameState = GameState.Pause;
@@ -98,7 +125,7 @@ public class GameManager : MonoBehaviour {
                 WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 0);
                 break;
             case CurrentPlayMode.White:
-                ActiveBlackMode(true);
+                ActivateBlackMode(true);
                 BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 0);
                 break;
         }
@@ -117,16 +144,18 @@ public class GameManager : MonoBehaviour {
         return false;
     }
 
-    void ActiveBlackMode(bool active)
+    void ActivateBlackMode(bool active)
     {
         BlackWorld.SetActiveRecursively(active);
-        BlackCam.active = active;
+        MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
+        //BlackCam.active = active;
         
     }
     void ActivateWhiteMode(bool active)
     {
         WhiteWorld.SetActiveRecursively(active);
-        WhiteCam.active = active;
+        //WhiteCam.active = active;
+        MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
     }
 
 

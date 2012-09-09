@@ -195,7 +195,13 @@ public class CharacterBasics : MonoBehaviour {
         //are we still moving?
         return (speed == 0)? false: true;
     }
-	
+
+    protected void ForceStopEverything()
+    {
+        direction = Vector3.zero;
+        speed = 0;
+    }
+
 	/// <summary>
 	/// Used for jumping and launching
 	/// </summary>

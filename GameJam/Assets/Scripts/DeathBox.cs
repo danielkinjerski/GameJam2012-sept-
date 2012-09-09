@@ -5,7 +5,12 @@ public class DeathBox : MonoBehaviour {
 
     void OnTriggerEnter(Collider collider)
     {
-        Destroy(collider.gameObject);
-        GameObject.Find("GameManager").SendMessage("GameOver");
+        if (collider.tag == "Player")
+            collider.SendMessage("Respawn");
+        else
+        {
+            Destroy(collider.gameObject);
+            GameObject.Find("GameManager").SendMessage("GameOver");
+        }
     }
 }
