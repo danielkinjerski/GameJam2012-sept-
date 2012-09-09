@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviour
         time = Time.timeSinceLevelLoad;
         UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
         UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
-        deathLbl.text = "you died: 0 time(s)!"
+        deathLbl.text = "you died: 0 time(s)!";
         timeLbl.text = "Your time: 0";
     }
     #endregion
