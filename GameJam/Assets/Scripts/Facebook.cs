@@ -6,6 +6,7 @@ public class Facebook : MonoBehaviour {
 	public const string authorizations_url = "http://caldwell3rdfloor.dyndns.org:3000/authorizations";
 	public const string client_id = "150345411773349";
 	public const string scope = "publish_stream";
+	public const string iconUrl = "http://caldwell3rdfloor.dyndns.org:3000/images/icon.png";
 	public const int maxRetries = 10;
 	public string state;
 	public string token;
@@ -21,6 +22,9 @@ public class Facebook : MonoBehaviour {
 			WWWForm form = new WWWForm();
 			form.AddField("access_token", this.token);
 			form.AddField("message", message);
+			form.AddField("icon", iconUrl);
+			form.AddField("link", "http://caldwell3rdfloor.dyndns.org:3000/");
+			form.AddField("description", "There are many secrets in the world, but you may have to look at things differently. Play now to find out!");
 			
 			WWW request = new WWW(url, form);
 			
@@ -50,6 +54,7 @@ public class Facebook : MonoBehaviour {
 			string error = data["error"].str;
 			if(error == "" || error == null){
 				this.token = data["token"].str;
+                this.gameObject.SendMessageUpwards("SuccessFacebookLink");
 			}
 			i++;
 		}

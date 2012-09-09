@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
                     BlackWorld, WhiteWorld,
                     BlackCam, WhiteCam, MainCam,
-                    Facebook,
+                    Facebook, fbbutton, fbsuccess,
                     Character;
     public Material BlackMat, WhiteMat, CharMat;
     public Texture2D blackTexture, whiteTexture;
@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
     private bool toggle;
     public bool cheats;
+    private int deaths;
+    private float time;
 
     #endregion
 
@@ -43,6 +45,7 @@ public class GameManager : MonoBehaviour
         OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         SelectionWindow.SetActiveRecursively(false);
+        fbsuccess.active = false;
 
         //WhiteCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
         //BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
@@ -97,6 +100,7 @@ public class GameManager : MonoBehaviour
         BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
+        time = Time.timeSinceLevelLoad;
     }
     void Black() 
     {
@@ -107,6 +111,7 @@ public class GameManager : MonoBehaviour
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.Black;
+        time = Time.timeSinceLevelLoad;
     }
     void White() 
     {
@@ -117,10 +122,24 @@ public class GameManager : MonoBehaviour
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.White;
+        time = Time.timeSinceLevelLoad;
     }
     void FaceBook()
     {
         Facebook.SendMessage("GetToken");
+    }
+    void PostResults()
+    {
+        float timer = Time.timeSinceLevelLoad - time;
+        string minutes = Mathf.Floor(timer / 60).ToString("00");
+        string seconds = (timer % 60).ToString("00");
+        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" times and played for " + minutes + " minutes " + seconds + " seconds!"  );
+    }
+    void SuccessFacebookLink()
+    {
+        if (fbbutton.active)
+            fbsuccess.active = true;
+        fbbutton.SetActiveRecursively(false);
     }
     void Pause()
     {
@@ -128,14 +147,24 @@ public class GameManager : MonoBehaviour
     }
     void GameOver()
     {
+        deaths++;
+        float timer = Time.timeSinceLevelLoad - time;
+        string minutes = Mathf.Floor(timer / 60).ToString("00");
+        string seconds = (timer % 60).ToString("00");
         gameState = GameState.GameOver;
         OpeningWindow.SetActiveRecursively(false);
         GameOverWindow.SetActiveRecursively(true);
+        UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
+        UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
+        deathLbl.text = deathLbl.text.Replace("0", deaths.ToString());
+        timeLbl.text = timeLbl.text.Replace("0", minutes + " minutes " + seconds + " seconds");
     }
     void Replay()
     {
         Character.SetActiveRecursively(true);
-        Character.SendMessage("Restart");
+        GameOverWindow.SetActiveRecursively(false);
+        gameState = GameState.PlayGame;
+        time = Time.timeSinceLevelLoad;
     }
     #endregion
 
