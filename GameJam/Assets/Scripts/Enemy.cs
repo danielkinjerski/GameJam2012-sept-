@@ -31,7 +31,9 @@ public class Enemy : CharacterBasics {
 	/// </summary>
 	void Update () 
 	{
-	  if (charType == CharacterType.enemy)
+		if(GameManager.gameState != GameState.PlayGame) return;
+		
+		if (charType == CharacterType.enemy)
 		{
             this.gameObject.tag = "Enemy";
 			if (CheckTargetDistance() <= scopeDistance)
