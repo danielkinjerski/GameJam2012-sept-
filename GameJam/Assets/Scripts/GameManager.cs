@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+
+#region Enums
 public enum GameState
 {
     OpeningWindow = 1,
@@ -12,7 +14,11 @@ public  enum CurrentPlayMode
     Black = 1,
     White = 2
 }
-public class GameManager : MonoBehaviour {
+#endregion
+public class GameManager : MonoBehaviour
+{
+
+    #region Variables
 
     public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
                     BlackWorld, WhiteWorld, 
@@ -21,8 +27,13 @@ public class GameManager : MonoBehaviour {
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
     private bool toggle;
+    public bool cheats;
 
-	void Awake () {
+    #endregion
+
+    #region Mono Inherit Functions
+
+    void Awake () {
         BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1f);
         WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1f);
         gameState = GameState.OpeningWindow;
@@ -38,24 +49,17 @@ public class GameManager : MonoBehaviour {
 
 	
 	}
-
-    void OnApplicationQuit()
-    {
-        BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1);
-        WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1);
-    }
 	
-	void Update () {
+	void Update ()
+    {
 
+        #region Fade in/out
         if (toggle)
         {
-            print("toggle" + GameManager.currentPlayMode);
             if (GameManager.currentPlayMode == CurrentPlayMode.Black)
             {
-                print("black"+WhiteMat.color.a);
                 if (Toggle(ref WhiteMat, true)&&Toggle(ref BlackMat, false))
                 {
-                    print("done");
                     toggle = false;
                     ActivateBlackMode(false);
                     GameManager.currentPlayMode = CurrentPlayMode.White;
@@ -63,18 +67,20 @@ public class GameManager : MonoBehaviour {
             }
             else if (GameManager.currentPlayMode == CurrentPlayMode.White)
             {
-                print("white");
                 if(Toggle(ref BlackMat, true)&& Toggle(ref WhiteMat, false))
                 {
-                    print("done");
                     toggle = false;
                     ActivateWhiteMode(false);
                     GameManager.currentPlayMode = CurrentPlayMode.Black;
                 }
             }
         }
-	}
+        #endregion
+    }
 
+    #endregion
+
+    #region UI Events
     void Play()
     {
         OpeningWindow.SetActiveRecursively( false );
@@ -123,6 +129,10 @@ public class GameManager : MonoBehaviour {
     {
         Application.LoadLevel(Application.loadedLevel);
     }
+    #endregion
+
+    #region Utilities
+
     void Switch()
     {
         toggle = true;
@@ -141,8 +151,6 @@ public class GameManager : MonoBehaviour {
 
     bool Toggle(ref Material mat, bool pulse)
     {
-        //if (mat.color.a <= .2f || mat.color.a >= 1f) { pulse = !pulse; }    
-
         if ((mat.color.a <= 0 && !pulse) || (mat.color.a >= 1 && pulse))
             return true;
 
@@ -165,6 +173,14 @@ public class GameManager : MonoBehaviour {
         if (active)
             MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
     }
+
+    void OnApplicationQuit()
+    {
+        BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1);
+        WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1);
+    }
+
+    #endregion
 
 
 }
