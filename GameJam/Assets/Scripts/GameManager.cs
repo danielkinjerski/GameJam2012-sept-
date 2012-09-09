@@ -30,10 +30,12 @@ public class GameManager : MonoBehaviour {
         GameOverWindow.SetActiveRecursively(false);
         SelectionWindow.SetActiveRecursively(false);
 
-        WhiteCam.camera.rect = BlackCam.camera.rect = new Rect(0, 0, 1, 1);
-        BlackCam.active = false;
         //WhiteCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
         //BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
+
+        MainCam.camera.rect = BlackCam.camera.rect = new Rect(0, 0, 1, 1);
+        MainCam.active = false;
+
 	
 	}
 
@@ -81,24 +83,30 @@ public class GameManager : MonoBehaviour {
 
     void Gray() 
     {
-        WhiteCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
+        WhiteCam.active = BlackCam.active = true;
         BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
     }
     void Black() 
     {
+        WhiteCam.active = BlackCam.active = false;
+        MainCam.active = true;
         ActivateWhiteMode(false);
         ActivateBlackMode(true);
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
+        GameManager.currentPlayMode = CurrentPlayMode.Black;
     }
     void White() 
     {
+        WhiteCam.active = BlackCam.active = false;
+        MainCam.active = true;
         ActivateBlackMode(false);
         ActivateWhiteMode(true);
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
+        GameManager.currentPlayMode = CurrentPlayMode.White;
     }
     
     void Pause()
@@ -147,15 +155,15 @@ public class GameManager : MonoBehaviour {
     void ActivateBlackMode(bool active)
     {
         BlackWorld.SetActiveRecursively(active);
-        MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
-        //BlackCam.active = active;
+        if (active)
+            MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
         
     }
     void ActivateWhiteMode(bool active)
     {
         WhiteWorld.SetActiveRecursively(active);
-        //WhiteCam.active = active;
-        MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
+        if (active)
+            MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
     }
 
 

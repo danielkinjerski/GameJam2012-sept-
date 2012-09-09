@@ -9,12 +9,12 @@ public class CharacterBasics : MonoBehaviour {
 
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
 	
-	
+	//falling, standing, buonce, walking, jump
 	#region Animation Names
-	public string walk = "Walk";
-	public string run = "Run";
-	public string idle = "Idle_Chilling";
-	public string fall = "Falling_Pose";
+	public string walk = "Walking";
+	//public string run = "Run";
+	public string idle = "Default Take";
+	public string fall = "Fall";
 	public string jump = "Jump";
 	#endregion
 	
@@ -25,53 +25,35 @@ public class CharacterBasics : MonoBehaviour {
 	#region Important
 	protected Transform trans;
 	protected CharacterController controller;
-	protected Animation anim;
+	protected Animation anim = new Animation();
 	protected SkinnedMeshRenderer mesh;
 	#endregion
-	
-	
+
 	// Use this for initialization
 	protected virtual void Awake () 
 	{
 		controller = GetComponent<CharacterController>();
 		trans = this.transform;
-        anim = GetComponent<Animation>();
+        anim = this.GetComponent<Animation>();
 	}
 	
 	//The Animation component of the character
 	protected void AnimationFramework()
     {
-		if (controller.isGrounded && !attacking)
+		if (controller.isGrounded)
 		{
-			#region Running
-			if (speed > maxSpeed / 2)
-	        {
-	            //if we are coming from idle or walk ;; force chance
-	            if (anim.IsPlaying(walk) || anim.IsPlaying(idle))
-	                anim.CrossFade(run);
-	
-	            //if we are already playing out anim ;; wait till its over, then play again
-	            else if (!anim.isPlaying)
-	                anim.Play(run);
-	
-	            //set animation speed based on the percentage of current speed against maxspeed
-	            anim[run].speed = speed / maxSpeed;
-	        }
-			#endregion
-			else
 			#region Walking
-			if (speed > maxSpeed / 20)
+			if (speed > 0)
 	        {
 	            //if we are coming from idle or run ;; force chance
-	            if (anim.IsPlaying(run) || anim.IsPlaying(idle))
-	                anim.CrossFade(walk);
-	
+	            if (anim.IsPlaying("Default Take"))
+	                anim.CrossFade(walk);	
 	            //if we are already playing out anim ;; wait till its over, then play again
 	            else if (!anim.isPlaying)
 	                anim.Play(walk);
 	
 	            //set animation speed based on the percentage of current speed against maxspeed
-	            anim[run].speed = speed / maxSpeed;
+                anim[walk].speed = speed / maxSpeed;
 	        }
 			#endregion
 	
@@ -79,7 +61,7 @@ public class CharacterBasics : MonoBehaviour {
 			else if (speed == 0)
 	        {
 	            //if we are playing any other animation of than idle ;; force chance
-	            if (anim.IsPlaying(run) || anim.IsPlaying(walk))
+	            if (anim.IsPlaying("Walking"))
 	                anim.CrossFade(idle);			
 	            //if nothing is playing ;; play again
 	            else if (!anim.isPlaying)
@@ -90,7 +72,7 @@ public class CharacterBasics : MonoBehaviour {
 		}
 		
 		#region Falling
-		if (falling && (!controller.isGrounded && !attacking))	
+		if (falling)	
 		{
 			  if (!anim.IsPlaying(fall))
                  anim.Blend(fall);
@@ -133,6 +115,7 @@ public class CharacterBasics : MonoBehaviour {
             jumping = false;
             falling = false;
         }
+
 	}
 
 
@@ -144,6 +127,8 @@ public class CharacterBasics : MonoBehaviour {
     /// <returns>true if we are moving false if we are not</returns>
     public virtual bool BaseMovement(Vector2 input, float speed)
     {
+        AnimationFramework();
+
         //build our movement vector
         Vector3 moveDir = new Vector3(input.x,direction.y,input.y);
 
