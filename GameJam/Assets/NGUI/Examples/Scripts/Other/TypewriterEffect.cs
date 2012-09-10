@@ -40,6 +40,11 @@ public class TypewriterEffect : MonoBehaviour
 				mLabel.text = mText.Substring(0, ++mOffset);
 			}
 		}
-		else Destroy(this);
 	}
+    void OnEnable()
+    {
+        mLabel = null;
+        mOffset = 0;
+        mNextChar = 0f;
+    }
 }

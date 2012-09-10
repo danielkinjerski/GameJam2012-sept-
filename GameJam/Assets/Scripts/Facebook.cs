@@ -55,16 +55,52 @@ public class Facebook : MonoBehaviour {
 			if(error == "" || error == null){
 				this.token = data["token"].str;
                 this.gameObject.SendMessageUpwards("SuccessFacebookLink");
-			}
+            }
+            else if (i >= maxRetries)
+            {
+                this.gameObject.SendMessageUpwards("FailedFacebookLink");
+            }
 			i++;
 		}
 	}
 	
-	void GetToken(){
-        //Application.OpenURL(AuthDialogUrl());
+	void GetToken()
+    {
+#if UNITY_WEBPLAYER
         Application.ExternalEval("window.open('" + AuthDialogUrl() + "','Connect to Jump Shift')");
-		string url = authorizations_url + "/" + this.state;
+        time = Time.timeSinceLevelLoad;
+        tokenAccess = TokenAccess.BeginAttempt;
+#else
+        Application.OpenURL(AuthDialogUrl());     
+#endif
+        this.gameObject.SendMessageUpwards("ProcessFacebookLink");
+        string url = authorizations_url + "/" + this.state;
 		
 		StartCoroutine(GetTokenFrom(url));
 	}
+
+#if UNITY_WEBPLAYER
+    public enum TokenAccess
+    {
+        Null, BeginAttempt, Success, Failed
+    }
+    TokenAccess tokenAccess = TokenAccess.Null;
+    float time;
+    void Update()
+    {
+        if (tokenAccess == TokenAccess.BeginAttempt)
+        {
+            if (token.Length > 0 && state.Length > 0)
+            {
+                this.gameObject.SendMessageUpwards("SuccessFacebookLink");
+                tokenAccess = TokenAccess.Success;
+            }
+            else if ((Time.timeSinceLevelLoad - time) % 60 > 5)
+            {
+                this.gameObject.SendMessageUpwards("FailedFacebookLink");
+                tokenAccess = TokenAccess.Failed;
+            }
+        }
+    }
+#endif
 }

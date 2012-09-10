@@ -12,7 +12,8 @@ public enum GameState
 public  enum CurrentPlayMode
 {
     Black = 1,
-    White = 2
+    White = 2,
+    Grey = 3
 }
 #endregion
 public class GameManager : MonoBehaviour
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour
                     BlackCam, WhiteCam, MainCam,
                     Facebook, fbbutton, fbsuccess,
                     Character;
+    UILabel fb;
     public Material BlackMat, WhiteMat, CharMat;
     public Texture2D blackTexture, whiteTexture;
     public static GameState gameState = GameState.OpeningWindow;
@@ -32,7 +34,7 @@ public class GameManager : MonoBehaviour
     private bool toggle;
     public bool cheats;
     private int deaths;
-    private float time;
+    private float time, maxTime;
 
     #endregion
 
@@ -45,14 +47,15 @@ public class GameManager : MonoBehaviour
         OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         SelectionWindow.SetActiveRecursively(false);
-        fbsuccess.active = false;
+        
 
-        //WhiteCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
-        //BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
+        BlackCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
+        WhiteCam.camera.rect = new Rect(0, 0, 0.5f, 1);
 
-        MainCam.camera.rect = BlackCam.camera.rect = new Rect(0, 0, 1, 1);
-        MainCam.active = false;
-        Facebook.active = true;
+        MainCam.camera.rect = new Rect(0, 0, 1, 1);
+        MainCam.active = Facebook.active = true;
+        BlackCam.active = WhiteCam.active = fbsuccess.active = false;
+        fb = fbsuccess.GetComponent<UILabel>();
 
 	
 	}
@@ -88,18 +91,35 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region UI Events
+    void Switch()
+    {
+        if (currentPlayMode == CurrentPlayMode.Grey)
+            return;
+
+        toggle = true;
+        switch (GameManager.currentPlayMode)
+        {
+            case CurrentPlayMode.Black:
+                ActivateWhiteMode(true);
+                WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 0);
+                break;
+            case CurrentPlayMode.White:
+                ActivateBlackMode(true);
+                BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 0);
+                break;
+        }
+    }
     void Play()
     {
         OpeningWindow.SetActiveRecursively( false );
         SelectionWindow.SetActiveRecursively(true);
     }
-
     void Gray() 
     {
         WhiteCam.active = BlackCam.active = true;
-        BlackCam.camera.rect = new Rect(0, 0, 0.5f, 1);
         SelectionWindow.SetActiveRecursively(false);
         gameState = GameState.PlayGame;
+        currentPlayMode = CurrentPlayMode.Grey;
         time = Time.timeSinceLevelLoad;
     }
     void Black() 
@@ -131,15 +151,39 @@ public class GameManager : MonoBehaviour
     void PostResults()
     {
         float timer = Time.timeSinceLevelLoad - time;
+        if (timer < maxTime)
+            timer = maxTime;
+        else
+            maxTime = timer;
         string minutes = Mathf.Floor(timer / 60).ToString("00");
         string seconds = (timer % 60).ToString("00");
-        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" times and played for " + minutes + " minutes " + seconds + " seconds!"  );
+        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" times and lasted for  a maximum of " + minutes + " minutes " + seconds + " seconds!"  );
     }
     void SuccessFacebookLink()
     {
-        if (fbbutton.active)
+        if (fb.text != "Success!")
+        {
+            fb.color = Color.green;
+            fb.text = "Success!";
+        }
+    }
+    void ProcessFacebookLink()
+    {
+        if (fbbutton.active && fb.text != "Processing... Please Wait")
+        {
             fbsuccess.active = true;
+            fb.color = Color.yellow;
+            fb.text = "Processing... Please Wait";
+        }
         fbbutton.SetActiveRecursively(false);
+    }
+    void FailedFacebookLink()
+    {
+        if (fb.text != "There seems to have been a problem\nWe are having issues with the web version.\nSorry about that, feel free to play!")
+        {
+            fb.color = Color.red;
+            fb.text = "There seems to have been a problem\nWe are having issues with the web version.\nSorry about that, feel free to play!";
+        }
     }
     void Pause()
     {
@@ -149,11 +193,17 @@ public class GameManager : MonoBehaviour
     {
         deaths++;
         float timer = Time.timeSinceLevelLoad - time;
+        if (timer < maxTime)
+            timer = maxTime;
+        else
+            maxTime = timer;
         string minutes = Mathf.Floor(timer / 60).ToString("00");
         string seconds = (timer % 60).ToString("00");
         gameState = GameState.GameOver;
         OpeningWindow.SetActiveRecursively(false);
         GameOverWindow.SetActiveRecursively(true);
+        if (fb.text == "There seems to have been a problem\nWe are having issues with the web version.\nSorry about that, feel free to play!")
+            GameObject.Find("btnFBResults").SetActiveRecursively(false);
         UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
         UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
         deathLbl.text = deathLbl.text.Replace("0", deaths.ToString());
@@ -161,34 +211,19 @@ public class GameManager : MonoBehaviour
     }
     void Replay()
     {
-        Character.SetActiveRecursively(true);
-        GameOverWindow.SetActiveRecursively(false);
+
         gameState = GameState.PlayGame;
         time = Time.timeSinceLevelLoad;
         UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
         UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
-        deathLbl.text = "you died: 0 time(s)!";
-        timeLbl.text = "Your time: 0";
+        deathLbl.text = "You died: 0 time(s)!";
+        timeLbl.text = "Your max time: 0";
+        Character.SetActiveRecursively(true);
+        GameOverWindow.SetActiveRecursively(false);
     }
     #endregion
 
     #region Utilities
-
-    void Switch()
-    {
-        toggle = true;
-        switch (GameManager.currentPlayMode)
-        {
-            case CurrentPlayMode.Black:
-                ActivateWhiteMode(true);
-                WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 0);
-                break;
-            case CurrentPlayMode.White:
-                ActivateBlackMode(true);
-                BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 0);
-                break;
-        }
-    }
 
     bool Toggle(ref Material mat, bool pulse)
     {
@@ -196,7 +231,6 @@ public class GameManager : MonoBehaviour
             return true;
 
         mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, (pulse) ? (mat.color.a + .1f) : (mat.color.a - .1f));
-        print(mat.color.a + pulse.ToString()+mat.name);
 
         return false;
     }
