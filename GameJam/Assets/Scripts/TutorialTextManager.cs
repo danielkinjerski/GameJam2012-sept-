@@ -10,7 +10,7 @@ public class TutorialTextManager : MonoBehaviour {
     public List<GameObject> msg = new List<GameObject>();
 
 	// Use this for initialization
-	void Start () {
+	void OnEnable () {
         foreach (GameObject m in msg)
         {
             m.active = false;
