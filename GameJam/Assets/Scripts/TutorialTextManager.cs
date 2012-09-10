@@ -38,7 +38,7 @@ public class TutorialTextManager : MonoBehaviour {
                             isFinished = true;
                         index++;
                     }
-                    else if (!msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 10)
+                    else if (!msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 1) //Delay in next text
                     {
                         msg[i].active = true;
                         timeCache = Time.timeSinceLevelLoad;
