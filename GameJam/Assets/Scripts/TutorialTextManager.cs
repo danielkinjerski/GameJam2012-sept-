@@ -26,22 +26,30 @@ public class TutorialTextManager : MonoBehaviour {
 
         for (int i = 0; i < msg.Count; i++)
         {
-            if (index == i&&(i != 3 && GameManager.currentPlayMode == CurrentPlayMode.Grey))
+            if (index == i)
             {
-                if (msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 10)
+                if (i != 3 && GameManager.currentPlayMode != CurrentPlayMode.Grey)
                 {
-                    msg[i].active = false;
-                    timeCache = Time.timeSinceLevelLoad;
-                    if (index == msg.Count)
-                        isFinished = true;
-                    index++;
+                    if (msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 10)
+                    {
+                        msg[i].active = false;
+                        timeCache = Time.timeSinceLevelLoad;
+                        if (index == msg.Count)
+                            isFinished = true;
+                        index++;
+                    }
+                    else if (!msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 10)
+                    {
+                        msg[i].active = true;
+                        timeCache = Time.timeSinceLevelLoad;
+                    }
                 }
-                else if (!msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 20)
+                else
                 {
-                    msg[i].active = true;
-                    timeCache = Time.timeSinceLevelLoad;
+                    isFinished = true;
                 }
                 return;
             }
-        }	}
+        }	
+    }
 }
