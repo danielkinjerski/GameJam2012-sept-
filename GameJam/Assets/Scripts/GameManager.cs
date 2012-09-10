@@ -21,14 +21,14 @@ public class GameManager : MonoBehaviour
 
     #region Variables
 
-    public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
+    public GameObject OpeningWindow, GameOverWindow, SelectionWindow, TutorialWindow,
                     BlackWorld, WhiteWorld,
                     BlackCam, WhiteCam, MainCam,
-                    Facebook, fbbutton, fbsuccess,
-                    Character;
+                    Facebook, fbbutton, fbsuccess, fbpost,
+                    Character,
+                    CharBRender, CharWRender, CharMRender;
     UILabel fb;
-    public Material BlackMat, WhiteMat, CharMat;
-    public Texture2D blackTexture, whiteTexture;
+    public Material BlackMat, WhiteMat;
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
     private bool toggle;
@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
         OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         SelectionWindow.SetActiveRecursively(false);
+        TutorialWindow.SetActiveRecursively(false);
         
 
         BlackCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
@@ -121,6 +122,9 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         currentPlayMode = CurrentPlayMode.Grey;
         time = Time.timeSinceLevelLoad;
+        CharMRender.active = false;
+        CharBRender.active = CharWRender.active = true;
+        TutorialWindow.SetActiveRecursively(true);
     }
     void Black() 
     {
@@ -132,6 +136,9 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.Black;
         time = Time.timeSinceLevelLoad;
+        CharMRender.active = true;
+        CharBRender.active = CharWRender.active = false;
+        TutorialWindow.SetActiveRecursively(true);
     }
     void White() 
     {
@@ -143,6 +150,9 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.White;
         time = Time.timeSinceLevelLoad;
+        CharMRender.active = true;
+        CharBRender.active = CharWRender.active = false;
+        TutorialWindow.SetActiveRecursively(true);
     }
     void FaceBook()
     {
@@ -202,8 +212,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.GameOver;
         OpeningWindow.SetActiveRecursively(false);
         GameOverWindow.SetActiveRecursively(true);
-        if (fb.text == "There seems to have been a problem\nWe are having issues with the web version.\nSorry about that, feel free to play!")
-            GameObject.Find("btnFBResults").SetActiveRecursively(false);
+        if (fb.color == Color.red)
+            fbpost.SetActiveRecursively(false);
         UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
         UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
         deathLbl.text = deathLbl.text.Replace("0", deaths.ToString());
@@ -241,7 +251,6 @@ public class GameManager : MonoBehaviour
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
-            CharMat.mainTexture = blackTexture;
         }
         
     }
@@ -251,7 +260,6 @@ public class GameManager : MonoBehaviour
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
-            CharMat.mainTexture = whiteTexture;
         }
     }
 
