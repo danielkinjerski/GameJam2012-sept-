@@ -92,6 +92,14 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region UI Events
+    void BackToMain()
+    {
+        Application.LoadLevel(Application.loadedLevel);
+    }
+    void Quit()
+    {
+        Application.Quit();
+    }
     void Switch()
     {
         if (currentPlayMode == CurrentPlayMode.Grey)
@@ -218,6 +226,7 @@ public class GameManager : MonoBehaviour
         UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
         deathLbl.text = deathLbl.text.Replace("0", deaths.ToString());
         timeLbl.text = timeLbl.text.Replace("0", minutes + " minutes " + seconds + " seconds");
+        TutorialWindow.SetActiveRecursively(false);
     }
     void Replay()
     {
@@ -230,6 +239,7 @@ public class GameManager : MonoBehaviour
         timeLbl.text = "Your max time: 0";
         Character.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
+        TutorialWindow.SetActiveRecursively(true);
     }
     #endregion
 
