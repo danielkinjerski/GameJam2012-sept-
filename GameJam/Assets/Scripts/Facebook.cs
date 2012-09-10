@@ -61,7 +61,8 @@ public class Facebook : MonoBehaviour {
 	}
 	
 	void GetToken(){
-		Application.OpenURL(AuthDialogUrl());
+        //Application.OpenURL(AuthDialogUrl());
+        Application.ExternalEval("window.open('" + AuthDialogUrl() + "','Connect to Jump Shift')");
 		string url = authorizations_url + "/" + this.state;
 		
 		StartCoroutine(GetTokenFrom(url));
