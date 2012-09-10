@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     public GameObject OpeningWindow, GameOverWindow, SelectionWindow,
                     BlackWorld, WhiteWorld,
                     BlackCam, WhiteCam, MainCam,
-                    Facebook, fbbutton, fbsuccess,
+                    Facebook, fbbutton, fbsuccess, fbpost,
                     Character;
     UILabel fb;
     public Material BlackMat, WhiteMat, CharMat;
@@ -202,8 +202,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.GameOver;
         OpeningWindow.SetActiveRecursively(false);
         GameOverWindow.SetActiveRecursively(true);
-        if (fb.text == "There seems to have been a problem\nWe are having issues with the web version.\nSorry about that, feel free to play!")
-            GameObject.Find("btnFBResults").SetActiveRecursively(false);
+        if (fb.color == Color.red)
+            fbpost.SetActiveRecursively(false);
         UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
         UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
         deathLbl.text = deathLbl.text.Replace("0", deaths.ToString());
