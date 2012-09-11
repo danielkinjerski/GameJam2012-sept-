@@ -176,7 +176,7 @@ public class GameManager : MonoBehaviour
             maxTime = timer;
         string minutes = Mathf.Floor(maxTime / 60).ToString("00");
         string seconds = (maxTime % 60).ToString("00");
-        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" times and lasted for  a maximum of " + minutes + " minutes " + seconds + " seconds!"  );
+        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" time(s) and lasted for  a maximum of " + minutes + " minute(s) " + seconds + " second(s)!"  );
     }
     void SuccessFacebookLink()
     {
