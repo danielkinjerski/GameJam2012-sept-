@@ -11,9 +11,10 @@ public class TutorialTextManager : MonoBehaviour {
 
 	// Use this for initialization
 	void OnEnable () {
-        foreach (GameObject m in msg)
+        print("enabled");
+        for (int i = 0; i < msg.Count; i++)
         {
-            m.active = false;
+            msg[i].active = false;
         }
         msg[0].active = true;
         timeCache = Time.timeSinceLevelLoad;
@@ -34,11 +35,13 @@ public class TutorialTextManager : MonoBehaviour {
                     {
                         msg[i].active = false;
                         timeCache = Time.timeSinceLevelLoad;
-                        if (index == msg.Count)
+                        if (index == msg.Count-1)
+                        {
                             isFinished = true;
+                        }
                         index++;
                     }
-                    else if (!msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 10)
+                    else if (!msg[i].active && ((Time.timeSinceLevelLoad - timeCache) % 60) > 1)
                     {
                         msg[i].active = true;
                         timeCache = Time.timeSinceLevelLoad;

@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
                     BlackCam, WhiteCam, MainCam,
                     Facebook, fbbutton, fbsuccess, fbpost,
                     Character,
-                    CharBRender, CharWRender, CharMRender;
+                    CharBRender, CharWRender;
     UILabel fb;
     public Material BlackMat, WhiteMat;
     public static GameState gameState = GameState.OpeningWindow;
@@ -130,8 +130,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         currentPlayMode = CurrentPlayMode.Grey;
         time = Time.timeSinceLevelLoad;
-        CharMRender.active = false;
-        CharBRender.active = CharWRender.active = true;
+        CharWRender.active = CharBRender.active = true;
+
         TutorialWindow.SetActiveRecursively(true);
     }
     void Black() 
@@ -144,8 +144,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.Black;
         time = Time.timeSinceLevelLoad;
-        CharMRender.active = true;
-        CharBRender.active = CharWRender.active = false;
+        CharWRender.active = false;
+        CharBRender.active = true;
         TutorialWindow.SetActiveRecursively(true);
     }
     void White() 
@@ -158,8 +158,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.White;
         time = Time.timeSinceLevelLoad;
-        CharMRender.active = true;
-        CharBRender.active = CharWRender.active = false;
+        CharWRender.active = true;
+        CharBRender.active = false;
         TutorialWindow.SetActiveRecursively(true);
     }
     void FaceBook()
@@ -261,6 +261,8 @@ public class GameManager : MonoBehaviour
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
+            CharBRender.active = true;
+            CharWRender.active = false;
         }
         
     }
@@ -270,6 +272,8 @@ public class GameManager : MonoBehaviour
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
+            CharBRender.active = false;
+            CharWRender.active = true;
         }
     }
 
