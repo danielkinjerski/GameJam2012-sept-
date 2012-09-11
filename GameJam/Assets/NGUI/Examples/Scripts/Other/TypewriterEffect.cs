@@ -15,16 +15,21 @@ public class TypewriterEffect : MonoBehaviour
 	int mOffset = 0;
 	float mNextChar = 0f;
 
+    void Start()
+    {
+
+    }
+
 	void Update ()
 	{
-		if (mLabel == null)
-		{
-			mLabel = GetComponent<UILabel>();
+        if (mLabel == null)
+        {
+            mLabel = GetComponent<UILabel>();
             storedText = mLabel.text;
-			mLabel.supportEncoding = false;
-			mLabel.symbolStyle = UIFont.SymbolStyle.None;
-			mText = mLabel.font.WrapText(mLabel.text, mLabel.lineWidth / mLabel.cachedTransform.localScale.x, mLabel.multiLine, false, UIFont.SymbolStyle.None);
-		}
+            mLabel.supportEncoding = false;
+            mLabel.symbolStyle = UIFont.SymbolStyle.None;
+            mText = mLabel.font.WrapText(mLabel.text, mLabel.lineWidth / mLabel.cachedTransform.localScale.x, mLabel.multiLine, false, UIFont.SymbolStyle.None);
+        }
 
 		if (mOffset < mText.Length)
 		{
@@ -46,11 +51,12 @@ public class TypewriterEffect : MonoBehaviour
     {
         if(mLabel!=null)
             mLabel.text = storedText;
-    }
-    void OnEnable()
-    {
         mLabel = null;
         mOffset = 0;
         mNextChar = 0f;
+    }
+    void OnEnable()
+    {
+       
     }
 }
