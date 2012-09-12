@@ -26,8 +26,9 @@ public class GameManager : MonoBehaviour
                     BlackCam, WhiteCam, MainCam,
                     Facebook, fbbutton, fbsuccess, fbpost,
                     Character,
-                    CharBRender, CharWRender, CharMRender;
+                    CharBRender, CharWRender;
     UILabel fb;
+    public UILabel deathLbl, timeLbl;
     public Material BlackMat, WhiteMat;
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
@@ -58,7 +59,8 @@ public class GameManager : MonoBehaviour
         BlackCam.active = WhiteCam.active = fbsuccess.active = false;
         fb = fbsuccess.GetComponent<UILabel>();
 
-	
+        deathLbl.text = "You died: @ time(s)!";
+        timeLbl.text = "Your max time: @";
 	}
 	
 	void Update ()
@@ -130,8 +132,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         currentPlayMode = CurrentPlayMode.Grey;
         time = Time.timeSinceLevelLoad;
-        CharMRender.active = false;
-        CharBRender.active = CharWRender.active = true;
+        CharWRender.active = CharBRender.active = true;
+
         TutorialWindow.SetActiveRecursively(true);
     }
     void Black() 
@@ -144,8 +146,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.Black;
         time = Time.timeSinceLevelLoad;
-        CharMRender.active = true;
-        CharBRender.active = CharWRender.active = false;
+        CharWRender.active = false;
+        CharBRender.active = true;
         TutorialWindow.SetActiveRecursively(true);
     }
     void White() 
@@ -158,8 +160,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         GameManager.currentPlayMode = CurrentPlayMode.White;
         time = Time.timeSinceLevelLoad;
-        CharMRender.active = true;
-        CharBRender.active = CharWRender.active = false;
+        CharWRender.active = true;
+        CharBRender.active = false;
         TutorialWindow.SetActiveRecursively(true);
     }
     void FaceBook()
@@ -168,14 +170,13 @@ public class GameManager : MonoBehaviour
     }
     void PostResults()
     {
+        fbpost.SetActiveRecursively(false);
         float timer = Time.timeSinceLevelLoad - time;
-        if (timer < maxTime)
-            timer = maxTime;
-        else
+        if (timer > maxTime)
             maxTime = timer;
-        string minutes = Mathf.Floor(timer / 60).ToString("00");
-        string seconds = (timer % 60).ToString("00");
-        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" times and lasted for  a maximum of " + minutes + " minutes " + seconds + " seconds!"  );
+        string minutes = Mathf.Floor(maxTime / 60).ToString("00");
+        string seconds = (maxTime % 60).ToString("00");
+        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" time(s) and lasted for  a maximum of " + minutes + " minute(s) " + seconds + " second(s)!"  );
     }
     void SuccessFacebookLink()
     {
@@ -211,35 +212,32 @@ public class GameManager : MonoBehaviour
     {
         deaths++;
         float timer = Time.timeSinceLevelLoad - time;
-        if (timer < maxTime)
-            timer = maxTime;
-        else
+        if (timer > maxTime)
             maxTime = timer;
-        string minutes = Mathf.Floor(timer / 60).ToString("00");
-        string seconds = (timer % 60).ToString("00");
+        string minutes = Mathf.Floor(maxTime / 60).ToString("00");
+        string seconds = (maxTime % 60).ToString("00");
         gameState = GameState.GameOver;
         OpeningWindow.SetActiveRecursively(false);
         GameOverWindow.SetActiveRecursively(true);
         if (fb.color == Color.red)
             fbpost.SetActiveRecursively(false);
-        UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
-        UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
-        deathLbl.text = deathLbl.text.Replace("0", deaths.ToString());
-        timeLbl.text = timeLbl.text.Replace("0", minutes + " minutes " + seconds + " seconds");
+        deathLbl.text = "You died: @ time(s)!";
+        timeLbl.text = "Your max time: @";
+        deathLbl.text = deathLbl.text.Replace("@", deaths.ToString());
+        timeLbl.text = timeLbl.text.Replace("@", minutes + " minutes " + seconds + " seconds");
         TutorialWindow.SetActiveRecursively(false);
     }
     void Replay()
     {
-
         gameState = GameState.PlayGame;
         time = Time.timeSinceLevelLoad;
-        UILabel deathLbl = GameObject.Find("lblDeaths").GetComponent<UILabel>();
-        UILabel timeLbl = GameObject.Find("lblTime").GetComponent<UILabel>();
-        deathLbl.text = "You died: 0 time(s)!";
-        timeLbl.text = "Your max time: 0";
         Character.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         TutorialWindow.SetActiveRecursively(true);
+        if(currentPlayMode == CurrentPlayMode.Black)
+            CharWRender.active = false;
+        if (currentPlayMode == CurrentPlayMode.White)
+            CharBRender.active = false;
     }
     #endregion
 
@@ -261,6 +259,8 @@ public class GameManager : MonoBehaviour
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
+            CharBRender.active = true;
+            CharWRender.active = false;
         }
         
     }
@@ -270,6 +270,8 @@ public class GameManager : MonoBehaviour
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
+            CharBRender.active = false;
+            CharWRender.active = true;
         }
     }
 
