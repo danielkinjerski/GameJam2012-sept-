@@ -46,8 +46,7 @@ public class GameManager : MonoBehaviour
         BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1f);
         WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1f);
         gameState = GameState.OpeningWindow;
-        OpeningWindow.SetActiveRecursively(false);
-        //OpeningWindow.SetActiveRecursively(true);
+        OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         SelectionWindow.SetActiveRecursively(false);
         TutorialWindow.SetActiveRecursively(false);
@@ -64,7 +63,7 @@ public class GameManager : MonoBehaviour
         deathLbl.text = "You died: @ time(s)!";
         timeLbl.text = "Your max time: @";
 
-        White();
+        //White();
 	}
 	
 	void Update ()
