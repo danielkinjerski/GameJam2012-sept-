@@ -12,11 +12,11 @@ public class Player : CharacterBasics {
 
 
         BaseMovement(InputMovement(), InputMovement().magnitude );
-		if (Input.GetKeyDown(KeyCode.Space)  || Input.GetKeyDown(KeyCode.JoystickButton1))
+		if (InputHandler.jbO  || Input.GetKeyDown(KeyCode.JoystickButton1))
 		{
 			base.Launch();
 		}
-        if (Input.GetKeyUp(KeyCode.X) || Input.GetKeyDown(KeyCode.JoystickButton2))
+        if (InputHandler.jbR2 || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
             manager.SendMessage("Switch");
         }

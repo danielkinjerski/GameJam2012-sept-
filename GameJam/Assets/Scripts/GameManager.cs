@@ -24,9 +24,10 @@ public class GameManager : MonoBehaviour
     public GameObject OpeningWindow, GameOverWindow, SelectionWindow, TutorialWindow,
                     BlackWorld, WhiteWorld,
                     BlackCam, WhiteCam, MainCam,
-                    Facebook, fbbutton, fbsuccess, fbpost,
+                    
                     Character,
                     CharBRender, CharWRender;
+    private GameObject Facebook, fbbutton, fbsuccess, fbpost;
     UILabel fb;
     public UILabel deathLbl, timeLbl;
     public Material BlackMat, WhiteMat;
@@ -45,7 +46,8 @@ public class GameManager : MonoBehaviour
         BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1f);
         WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1f);
         gameState = GameState.OpeningWindow;
-        OpeningWindow.SetActiveRecursively(true);
+        OpeningWindow.SetActiveRecursively(false);
+        //OpeningWindow.SetActiveRecursively(true);
         GameOverWindow.SetActiveRecursively(false);
         SelectionWindow.SetActiveRecursively(false);
         TutorialWindow.SetActiveRecursively(false);
@@ -55,12 +57,14 @@ public class GameManager : MonoBehaviour
         WhiteCam.camera.rect = new Rect(0, 0, 0.5f, 1);
 
         MainCam.camera.rect = new Rect(0, 0, 1, 1);
-        MainCam.active = Facebook.active = true;
-        BlackCam.active = WhiteCam.active = fbsuccess.active = false;
-        fb = fbsuccess.GetComponent<UILabel>();
+        MainCam.active = true;
+        BlackCam.active = WhiteCam.active = false;
+        //fb = fbsuccess.GetComponent<UILabel>();
 
         deathLbl.text = "You died: @ time(s)!";
         timeLbl.text = "Your max time: @";
+
+        White();
 	}
 	
 	void Update ()
@@ -219,8 +223,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.GameOver;
         OpeningWindow.SetActiveRecursively(false);
         GameOverWindow.SetActiveRecursively(true);
-        if (fb.color == Color.red)
-            fbpost.SetActiveRecursively(false);
+        /* (fb.color == Color.red)
+            fbpost.SetActiveRecursively(false);*/
         deathLbl.text = "You died: @ time(s)!";
         timeLbl.text = "Your max time: @";
         deathLbl.text = deathLbl.text.Replace("@", deaths.ToString());
