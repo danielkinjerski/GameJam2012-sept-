@@ -3,13 +3,13 @@ using System.Collections;
 
 public class CharacterBasics : MonoBehaviour
 {
-
+    bool sprinting = false;
     #region Variables
 
     private float speed, targetSpeed;
     private Vector3 direction, force, velocity, respawn, initialPos, initialRot;
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
-	public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump";
+	public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump", sprint = "dash";
 	public bool attacking = false, falling = false, jumping = false;
 
     public Transform trans;
@@ -102,12 +102,25 @@ public class CharacterBasics : MonoBehaviour
         #region Walk
         else if (speed > 0&&!falling&&!jumping)
         {
-            //if we are coming from idle or run ;; force chance
-            if (!anim.IsPlaying(walk))
-                anim.Play(walk);
-            //if we are already playing out anim ;; wait till its over, then play again
-            else if (!anim.isPlaying)
-                anim.Play(walk);
+            if (!sprinting)
+            {
+                //if we are coming from idle or run ;; force chance
+                if (!anim.IsPlaying(walk))
+                    anim.Play(walk);
+                //if we are already playing out anim ;; wait till its over, then play again
+                else if (!anim.isPlaying)
+                    anim.Play(walk);
+            }
+            else
+            {
+                //if we are coming from idle or run ;; force chance
+                if (!anim.IsPlaying(sprint))
+                    anim.Play(sprint);
+                //if we are already playing out anim ;; wait till its over, then play again
+                else if (!anim.isPlaying)
+                    anim.Play(sprint);
+
+            }
         }
         #endregion
 
@@ -155,9 +168,17 @@ public class CharacterBasics : MonoBehaviour
         else
             trans.forward = new Vector3(moveDir.x, 0, moveDir.z);
 
-        //This is our "friction"
-        speed = Mathf.Lerp(speed, targetSpeed, accelerationSpeed);
-
+        if ((Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbL2Held) )
+        {
+                sprinting = true;
+                speed = Mathf.Lerp(speed, targetSpeed*2, accelerationSpeed);
+        }
+        else
+        {
+                //This is our "friction"
+                sprinting = false;
+                speed = Mathf.Lerp(speed, targetSpeed, accelerationSpeed);
+        }
 
         //If we've got a signification magnitude, continue moving forward ;; if were are recieving movement, apply it 
         direction = (speed > .9f) ? new Vector3(moveDir.x * speed, _holdTheJump, moveDir.z * speed)

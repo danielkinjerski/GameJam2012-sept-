@@ -37,7 +37,7 @@ public class GameCamera : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		//playerTarget = GameObject.Find("Player");
+		playerTarget = GameObject.Find("Player");
 		//target = GameObject.Find("Player");
 	}
 	
