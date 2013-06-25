@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+// TODO: MAKE STATEMACHINE
+
 public class CharacterBasics : MonoBehaviour
 {
     bool sprinting = false;
