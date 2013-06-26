@@ -18,15 +18,20 @@ public class Player : RigidCharacterBasics {
 
 	}
 
+    public void OnGUI()
+    {
+
+        if (InputHandler.jbR2 || Input.GetKeyDown(KeyCode.JoystickButton1))
+        {
+            base.Launch();
+        }
+    }
+
     public void Update()
     {
         AnimationFramework();
 
-        if (InputHandler.jbO || Input.GetKeyDown(KeyCode.JoystickButton1))
-        {
-            base.Launch();
-        }
-        if (InputHandler.jbR2 || Input.GetKeyDown(KeyCode.JoystickButton2))
+        if (InputHandler.jbL2 || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
             manager.SendMessage("Switch");
         }
@@ -44,7 +49,7 @@ public class Player : RigidCharacterBasics {
     /// </returns>
     private Vector2 InputMovement()
     {
-        return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        return new Vector2(Input.GetAxis("Joy1 Axis 1") + Input.GetAxis("Horizontal_Depricated"), Input.GetAxis("Joy1 Axis 2")+ Input.GetAxis("Vertical_Depricated"));
     }
 
     #endregion
