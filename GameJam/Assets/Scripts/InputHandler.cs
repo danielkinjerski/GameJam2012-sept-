@@ -81,17 +81,17 @@ public class InputHandler : MonoBehaviour
     /// </summary>
     public KeyCode joybuttonL1 = KeyCode.Joystick1Button4, joybuttonL1Held = KeyCode.Joystick1Button4;
     /// <summary>
-    /// Right Bumper
-    /// </summary>
-    public KeyCode joybuttonL2 = KeyCode.Joystick1Button5, joybuttonL2Held = KeyCode.Joystick1Button5;
-    /// <summary>
     /// Left Trigger
     /// </summary>
-    public KeyCode joybuttonR1 = KeyCode.Joystick1Button6, joybuttonR1Held = KeyCode.Joystick1Button6;
+    public KeyCode joybuttonL2 = KeyCode.Joystick1Button12, joybuttonL2Held = KeyCode.Joystick1Button12;
+    /// <summary>
+    /// Right Bumper
+    /// </summary>
+    public KeyCode joybuttonR1 = KeyCode.Joystick1Button5, joybuttonR1Held = KeyCode.Joystick1Button5;
     /// <summary>
     /// Right Trigger
     /// </summary>
-    public KeyCode joybuttonR2 = KeyCode.Joystick1Button7, joybuttonR2Held = KeyCode.Joystick1Button7;
+    public KeyCode joybuttonR2 = KeyCode.Joystick1Button13, joybuttonR2Held = KeyCode.Joystick1Button13;
     #endregion
 
     // Update is called once per frame
@@ -103,10 +103,10 @@ public class InputHandler : MonoBehaviour
         if (Input.GetKey(button1) || Input.GetKey(joybutton1))
         {
             button1Timer += Time.deltaTime;
-            if (button1Timer > button1TimeWait)
-            {
+            //if (button1Timer > button1TimeWait)
+            //{
                 b1Held = true; jbOHeld = true; print("Button 1 Held");
-            }
+            //}
         }
         else { button1Timer = 0; b1Held = false; jbOHeld = false; }
         #endregion
@@ -237,6 +237,7 @@ public class InputHandler : MonoBehaviour
         #endregion
 
         #region L1
+        
         if (Input.GetKeyDown(joybuttonL1))
         { jbL1 = true; Debug.Log(joybuttonL1 + " pressed"); }
         else jbL1 = false;
@@ -256,7 +257,7 @@ public class InputHandler : MonoBehaviour
 
         #region L2 Held
         if (Input.GetKey(joybuttonL2Held))
-        { jbL2Held = true; Debug.Log(joybuttonL2Held + " pressed"); }
+        { jbL2Held = true; Debug.Log(joybuttonL2Held + " Held"); }
         else jbL2Held = false;
         #endregion
 
@@ -268,7 +269,7 @@ public class InputHandler : MonoBehaviour
 
         #region R2 Held
         if (Input.GetKey(joybuttonR2Held))
-        { jbR2Held = true; Debug.Log(joybuttonR2Held + " pressed"); }
+        { jbR2Held = true; Debug.Log(joybuttonR2Held + " Held"); }
         else jbR2Held = false;
         #endregion
         #endregion

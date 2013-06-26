@@ -53,13 +53,13 @@ public class RigidCharacterBasics : MonoBehaviour
         Vector3 down = new Vector3(trans.position.x, trans.position.y + 1f, trans.position.z);
         //Debug.DrawLine(trans.position, down, Color.cyan);
 
-        if (!Physics.Raycast(down, Vector3.down, out hitCast, 2f))
+        if (!Physics.Raycast(down, Vector3.down, out hitCast, 1f))
         {
             isGrounded = false;
             RaycastHit hit;
             Debug.DrawLine(trans.position, down, Color.cyan);
 
-            if (!Physics.Raycast(trans.position, Vector3.down, out hit, 2f) && !jumping)
+            if (!Physics.Raycast(trans.position, Vector3.down, out hit, 1f) && !jumping)
             {
 
             }
@@ -130,7 +130,7 @@ public class RigidCharacterBasics : MonoBehaviour
         else
             trans.forward = new Vector3(moveDir.x, 0, moveDir.z);
 
-        if ((Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbL2Held))
+        if ((Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbOHeld))
         {
             sprinting = true;
             speed = Mathf.Lerp(speed, targetSpeed * 2, accelerationSpeed);
@@ -243,24 +243,25 @@ public class RigidCharacterBasics : MonoBehaviour
         }
 
         if (isGrounded)//&!falling&&!jumping
-        {
+        {                // Idle
+            if (targetSpeed == 0 && direction.magnitude == 0)//!falling && !jumping
+            {
+                //if we are playing any other animation of than idle ;; force chance
+                if (!anim.IsPlaying(idle))
+                    anim.Play(idle);
+            }
+
             if (!sprinting)
             {
-                // Idle
-                if (targetSpeed <= 0)//!falling && !jumping
-                {
-                    //if we are playing any other animation of than idle ;; force chance
-                    if (!anim.IsPlaying(idle))
-                        anim.Play(idle);
-                }
-                else if (targetSpeed > 0)
+
+                if (targetSpeed > 0 && direction.magnitude != 0)
                 {
                     //if we are coming from idle or run ;; force chance
                     if (!anim.IsPlaying(walk))
                         anim.Play(walk);
                 }
             }
-            else
+            else if(sprinting && direction.magnitude != 0)
             {
                 //if we are coming from idle or run ;; force chance
                 if (!anim.IsPlaying(sprint))
