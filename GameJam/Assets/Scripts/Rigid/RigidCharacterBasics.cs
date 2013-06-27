@@ -3,7 +3,7 @@ using System.Collections;
 
 public class RigidCharacterBasics : MonoBehaviour
 {
-    bool sprinting = false;
+    public bool sprinting = false;
     #region Variables
 
     public float speed, targetSpeed;
@@ -130,15 +130,13 @@ public class RigidCharacterBasics : MonoBehaviour
         else
             trans.forward = new Vector3(moveDir.x, 0, moveDir.z);
 
-        if ((Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbOHeld))
+        if (sprinting)
         {
-            sprinting = true;
             speed = Mathf.Lerp(speed, targetSpeed * 2, accelerationSpeed);
         }
         else
         {
             //This is our "friction"
-            sprinting = false;
             speed = Mathf.Lerp(speed, targetSpeed, accelerationSpeed);
         }
 

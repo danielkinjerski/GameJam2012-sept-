@@ -254,12 +254,9 @@ public class InputHandler : MonoBehaviour
         { jbL2 = true; Debug.Log(joybuttonL2 + " pressed"); }
         else jbL2 = false;
         #endregion
+        //OuyaInputManager.GetButton(joybuttonL2Held, OuyaSDK.OuyaPlayer.player1);
 
-        #region L2 Held
-        if (Input.GetKey(joybuttonL2Held))
-        { jbL2Held = true; Debug.Log(joybuttonL2Held + " Held"); }
-        else jbL2Held = false;
-        #endregion
+       
 
         #region R2
         if (Input.GetKeyDown(joybuttonR2))
@@ -272,6 +269,38 @@ public class InputHandler : MonoBehaviour
         { jbR2Held = true; Debug.Log(joybuttonR2Held + " Held"); }
         else jbR2Held = false;
         #endregion
+        #endregion
+    }
+
+    public OuyaSDK.OuyaPlayer player = OuyaSDK.OuyaPlayer.player1;
+
+    void Awake()
+    {
+        OuyaInputManager.OuyaButtonEvent.addButtonEventListener(HandleButtonEvent);
+    }
+
+    private void HandleButtonEvent(OuyaSDK.OuyaPlayer p, OuyaSDK.KeyEnum b, OuyaSDK.InputAction bs)
+    {
+        print("um...");
+        if (!player.Equals(p)) { return; }
+
+        if (b.Equals(OuyaSDK.KeyEnum.BUTTON_O) && bs.Equals(OuyaSDK.InputAction.KeyDown))
+        {
+            print("Hi");
+        }
+
+        if (OuyaInputManager.GetButtonDown("RB", OuyaSDK.OuyaPlayer.player1))
+        {
+            print("hello");
+        }
+
+        #region L2 Held
+        if (OuyaInputManager.GetButton("LT", OuyaSDK.OuyaPlayer.player1))
+        { print("HI"); }
+
+
+        //{ jbL2Held = true; Debug.Log(joybuttonL2Held + " Held"); }
+        //else jbL2Held = false;
         #endregion
     }
 
