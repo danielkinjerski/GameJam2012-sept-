@@ -258,7 +258,18 @@ public class GameManager : MonoBehaviour
 
     void ActivateBlackMode(bool active)
     {
-        BlackWorld.SetActiveRecursively(active);
+        //BlackWorld.SetActive(active);
+
+        foreach (Transform g in BlackWorld.transform)
+        {
+            if (g.tag != "Player")
+            {
+                if (g.transform.Find("Player") && g.transform.Find("Player").transform.parent != null)
+                    g.transform.Find("Player").transform.parent = null;
+
+                g.transform.gameObject.SetActive(active);
+            }
+        }
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
@@ -269,7 +280,17 @@ public class GameManager : MonoBehaviour
     }
     void ActivateWhiteMode(bool active)
     {
-        WhiteWorld.SetActiveRecursively(active);
+        //WhiteWorld.SetActive(active);
+        foreach (Transform g in WhiteWorld.transform)
+        {
+            if (g.tag != "Player")
+            {
+                if (g.transform.Find("Player") && g.transform.Find("Player").transform.parent != null)
+                    g.transform.Find("Player").transform.parent = null;
+
+                g.transform.gameObject.SetActive(active);
+            }
+        }
         if (active)
         {
             MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);

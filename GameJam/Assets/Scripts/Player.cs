@@ -17,23 +17,54 @@ public class Player : RigidCharacterBasics {
 		
 
 	}
-
-    public void OnGUI()
+    public bool onPlatform = false;
+    public void CheckForPlatforms()
     {
+        RaycastHit hitCast;
+        Vector3 down = new Vector3(trans.position.x, trans.position.y + 1f, trans.position.z);
 
-        if (InputHandler.jbR2 || Input.GetKeyDown(KeyCode.JoystickButton1))
+        if (Physics.Raycast(down, Vector3.down, out hitCast, 1f) && hitCast.collider.tag == "Platform")
         {
-            base.Launch();
+            if (!onPlatform && hitCast.collider != null )
+            {
+                onPlatform = true;
+                transform.parent = hitCast.transform;
+                print("Hi!");
+            }
+
+        }
+        else if (onPlatform || hitCast.collider == null)
+        {
+            onPlatform = false;
+            transform.parent = null;
         }
     }
 
     public void Update()
     {
+        CheckForPlatforms();
+
+        if (InputHandler.jbO || Input.GetKeyDown(KeyCode.JoystickButton1))
+        {
+            base.Launch();
+        }
+
         AnimationFramework();
 
-        if (InputHandler.jbL2 || Input.GetKeyDown(KeyCode.JoystickButton2))
+        if (InputHandler.jbR2 || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
+            transform.parent = null;
+
             manager.SendMessage("Switch");
+        }
+
+        if ((Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbL2Held))
+        {
+            sprinting = true;
+        }
+        else
+        {
+            sprinting = false;
         }
     }
 
