@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 public class EndGame : MonoBehaviour {
-
+    public TweenScale ts;
+    GameObject player;
 	// Use this for initialization
 	void Start () {
 	
@@ -13,9 +14,17 @@ public class EndGame : MonoBehaviour {
 	
 	}
 
-    void OnTriggerEnter()
+    void OnTriggerEnter(Collider collider)
     {
-        transform.GetComponentInChildren<TweenScale>().enabled = true;
+        if (collider.tag == "Player")
+            player = collider.gameObject;
+        ts.enabled = true;
+    }
+
+    void Finished()
+    {
+        ts.transform.localScale = Vector3.one;
+        player.SendMessage("Respawn");
         GameObject.Find("GameManager").SendMessage("EndGame");
     }
 }

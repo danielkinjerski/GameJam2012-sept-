@@ -58,7 +58,7 @@ public class Player : RigidCharacterBasics {
             manager.SendMessage("Switch");
         }
 
-        if ((Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbL2Held))
+        if (Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbL2Held || Input.GetAxis("Joy1 Axis 3") < -.5f)
         {
             sprinting = true;
         }

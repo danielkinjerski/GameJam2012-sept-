@@ -190,6 +190,20 @@ public class GameManager : MonoBehaviour
         CharBRender.SetActive(false);
         TutorialWindow.SetActive(true);
     }
+
+    void EndGame()
+    {
+        float timer = Time.timeSinceLevelLoad - time;        
+        string minutes = Mathf.Floor(maxTime / 60).ToString("00");
+        string seconds = (maxTime % 60).ToString("00");
+        gameState = GameState.GameOver;
+        OpeningWindow.SetActive(false);
+        GameOverWindow.SetActive(true);
+        deathLbl.text = "You WIN! CONGRATULATIONS!";
+        timeLbl.text = "Time taken to complete this win:" + minutes + " minutes " + seconds + " seconds";
+        TutorialWindow.SetActive(false);
+    }
+
     void FaceBook()
     {
         Facebook.SendMessage("GetToken");
