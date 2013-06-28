@@ -58,7 +58,7 @@ public class Player : RigidCharacterBasics {
             manager.SendMessage("Switch");
         }
 
-        if ((Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbL2Held))
+        if (Input.GetAxis("Joy1 Axis 3") > 0.5)//(Input.GetKey(KeyCode.LeftShift) || InputHandler.bL2Held || InputHandler.jbL2Held))
         {
             sprinting = true;
         }
@@ -80,7 +80,7 @@ public class Player : RigidCharacterBasics {
     /// </returns>
     private Vector2 InputMovement()
     {
-        return new Vector2(Input.GetAxis("Joy1 Axis 1") + Input.GetAxis("Horizontal_Depricated"), Input.GetAxis("Joy1 Axis 2")+ Input.GetAxis("Vertical_Depricated"));
+        return new Vector2(Input.GetAxis("Joy1 Axis 1") + Input.GetAxis("Horizontal"), Input.GetAxis("Joy1 Axis 2")+ Input.GetAxis("Vertical"));
     }
 
     #endregion

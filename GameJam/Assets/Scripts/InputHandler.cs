@@ -254,9 +254,7 @@ public class InputHandler : MonoBehaviour
         { jbL2 = true; Debug.Log(joybuttonL2 + " pressed"); }
         else jbL2 = false;
         #endregion
-        //OuyaInputManager.GetButton(joybuttonL2Held, OuyaSDK.OuyaPlayer.player1);
-
-       
+        //OuyaInputManager.GetButton(joybuttonL2Held, OuyaSDK.OuyaPlayer.player1);   
 
         #region R2
         if (Input.GetKeyDown(joybuttonR2))
