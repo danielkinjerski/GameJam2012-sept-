@@ -718,7 +718,7 @@ public class UICamera : MonoBehaviour
 		cachedCamera.eventMask = 0;
 #endif
 
-		if (//Application.platform == RuntimePlatform.Android ||
+		if (Application.platform == RuntimePlatform.Android ||
 			Application.platform == RuntimePlatform.IPhonePlayer)
 		{
 			useMouse = false;

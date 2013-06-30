@@ -37,13 +37,15 @@ public class GameManager : MonoBehaviour
     private int deaths;
     private float time, maxTime;
 
+    public MaterialManager matMan;
+
     #endregion
 
     #region Mono Inherit Functions
 
     void Awake () {
-        BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1f);
-        WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1f);
+        //BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1f);
+        //WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1f);
         gameState = GameState.OpeningWindow;
         OpeningWindow.SetActive(true);
         GameOverWindow.SetActive(false);
@@ -66,42 +68,6 @@ public class GameManager : MonoBehaviour
 
         //White();
 	}
-	
-	void Update ()
-    {
-
-        #region Fade in/out
-        if (toggle)
-        {
-            if (GameManager.currentPlayMode == CurrentPlayMode.Black)
-            {
-                if (Toggle(ref WhiteMat, true)&&Toggle(ref BlackMat, false))
-                {
-                    toggle = false;
-                    ActivateBlackMode(false);
-                    GameManager.currentPlayMode = CurrentPlayMode.White;
-                }
-            }
-            else if (GameManager.currentPlayMode == CurrentPlayMode.White)
-            {
-                if(Toggle(ref BlackMat, true)&& Toggle(ref WhiteMat, false))
-                {
-                    toggle = false;
-                    ActivateWhiteMode(false);
-                    GameManager.currentPlayMode = CurrentPlayMode.Black;
-                }
-            }
-        }
-        #endregion
-
-        if (gameState == GameState.OpeningWindow)
-        {
-            if (InputHandler.jbO || Input.GetKey(KeyCode.Joystick1Button1))
-            {
-                Play();
-            }
-        }
-    }
 
     #endregion
 
@@ -121,16 +87,15 @@ public class GameManager : MonoBehaviour
             Character.transform.parent = null;
         }
 
-        toggle = true;
         switch (GameManager.currentPlayMode)
         {
             case CurrentPlayMode.Black:
                 ActivateWhiteMode(true);
-                WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 0);
+                ActivateBlackMode(false);
                 break;
             case CurrentPlayMode.White:
                 ActivateBlackMode(true);
-                BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 0);
+                ActivateWhiteMode(false);
                 break;
             case CurrentPlayMode.Grey:
                 ToggleGrayMode();
@@ -162,33 +127,17 @@ public class GameManager : MonoBehaviour
     }
     void Black() 
     {
-        WhiteCam.SetActive(false);
-        BlackCam.SetActive(false);
-        MainCam.SetActive(true);
         ActivateWhiteMode(false);
         ActivateBlackMode(true);
-        SelectionWindow.SetActive(false);
-        gameState = GameState.PlayGame;
-        GameManager.currentPlayMode = CurrentPlayMode.Black;
+        gameState = GameState.PlayGame;        
         time = Time.timeSinceLevelLoad;
-        CharWRender.SetActive(false);
-        CharBRender.SetActive(true);
-        TutorialWindow.SetActive(true);
     }
     void White() 
     {
-        WhiteCam.SetActive(false);
-        BlackCam.SetActive(false);
-        MainCam.SetActive(true);
         ActivateBlackMode(false);
         ActivateWhiteMode(true);
-        SelectionWindow.SetActive(false);
         gameState = GameState.PlayGame;
-        GameManager.currentPlayMode = CurrentPlayMode.White;
         time = Time.timeSinceLevelLoad;
-        CharWRender.SetActive(true);
-        CharBRender.SetActive(false);
-        TutorialWindow.SetActive(true);
     }
 
     void EndGame()
@@ -204,50 +153,11 @@ public class GameManager : MonoBehaviour
         TutorialWindow.SetActive(false);
     }
 
-    void FaceBook()
-    {
-        Facebook.SendMessage("GetToken");
-    }
-    void PostResults()
-    {
-        fbpost.SetActive(false);
-        float timer = Time.timeSinceLevelLoad - time;
-        if (timer > maxTime)
-            maxTime = timer;
-        string minutes = Mathf.Floor(maxTime / 60).ToString("00");
-        string seconds = (maxTime % 60).ToString("00");
-        Facebook.GetComponent<Facebook>().Publish("I died "+deaths+" time(s) and lasted for  a maximum of " + minutes + " minute(s) " + seconds + " second(s)!"  );
-    }
-    void SuccessFacebookLink()
-    {
-        if (fb.text != "Success!")
-        {
-            fb.color = Color.green;
-            fb.text = "Success!";
-        }
-    }
-    void ProcessFacebookLink()
-    {
-        if (fbbutton.activeInHierarchy && fb.text != "Processing... Please Wait")
-        {
-            fbsuccess.SetActive(true);
-            fb.color = Color.yellow;
-            fb.text = "Processing... Please Wait";
-        }
-        fbbutton.SetActive(false);
-    }
-    void FailedFacebookLink()
-    {
-        if (fb.text != "There seems to have been a problem\nWe are having issues with the web version.\nSorry about that, feel free to play!")
-        {
-            fb.color = Color.red;
-            fb.text = "There seems to have been a problem\nWe are having issues with the web version.\nSorry about that, feel free to play!";
-        }
-    }
     void Pause()
     {
         gameState = GameState.Pause;
     }
+
     void GameOver()
     {
         deaths++;
@@ -259,8 +169,6 @@ public class GameManager : MonoBehaviour
         gameState = GameState.GameOver;
         OpeningWindow.SetActive(false);
         GameOverWindow.SetActive(true);
-        /* (fb.color == Color.red)
-            fbpost.SetActiveRecursively(false);*/
         deathLbl.text = "You died: @ time(s)!";
         timeLbl.text = "Your max time: @";
         deathLbl.text = deathLbl.text.Replace("@", deaths.ToString());
@@ -279,28 +187,27 @@ public class GameManager : MonoBehaviour
         if (currentPlayMode == CurrentPlayMode.White)
             CharBRender.active = false;
     }
+
+    void OnCheats(bool isChecked)
+    {
+        print("Enabled cheats"+isChecked);
+        cheats = isChecked;
+    }
     #endregion
 
     #region Utilities
-
-    bool Toggle(ref Material mat, bool pulse)
-    {
-        if ((mat.color.a <= 0 && !pulse) || (mat.color.a >= 1 && pulse))
-            return true;
-
-        mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, (pulse) ? (mat.color.a + .1f) : (mat.color.a - .1f));
-
-        return false;
-    }
 
     void ActivateBlackMode(bool active)
     {
         BlackWorld.SetActive(active);
         if (active)
         {
+            matMan.BeginBlackMaterialChange(1);
+            matMan.BeginWhiteMaterialChange(0);
             MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
             CharBRender.SetActive(true);
             CharWRender.SetActive(false);
+            GameManager.currentPlayMode = CurrentPlayMode.Black;
         }
         
     }
@@ -309,9 +216,12 @@ public class GameManager : MonoBehaviour
         WhiteWorld.SetActive(active);
         if (active)
         {
+            matMan.BeginBlackMaterialChange(0);
+            matMan.BeginWhiteMaterialChange(1);
             MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
             CharBRender.SetActive(false);
             CharWRender.SetActive(true);
+            GameManager.currentPlayMode = CurrentPlayMode.White;
         }
     }
 
@@ -347,12 +257,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    void OnApplicationQuit()
-    {
-        BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, 1);
-        WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, 1);
-    }
-
     void SetVanishingPoint (Camera cam, Vector2 perspectiveOffset) 
     {
         Matrix4x4 m = cam.projectionMatrix;
@@ -367,10 +271,7 @@ public class GameManager : MonoBehaviour
 	    cam.projectionMatrix = PerspectiveOffCenter(left, right, bottom, top, cam.nearClipPlane, cam.farClipPlane);
     }
  
-    Matrix4x4 PerspectiveOffCenter (
-        float left , float right,
-        float bottom, float top,
-        float near, float far)
+    Matrix4x4 PerspectiveOffCenter (float left, float right, float bottom, float top, float near, float far)
     {
 	    float x =  (2.0f * near) / (right - left);
 	    float y =  (2.0f * near) / (top - bottom);
@@ -387,7 +288,7 @@ public class GameManager : MonoBehaviour
 	    m[3,0] = 0.0f;  m[3,1] = 0.0f;  m[3,2] = e;   m[3,3] = 0.0f;
         return m;
     }
-
+    
     #endregion
 
 
