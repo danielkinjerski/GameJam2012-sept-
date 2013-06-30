@@ -84,6 +84,22 @@ public class Player : RigidCharacterBasics {
         return new Vector2(Input.GetAxis("Joy1 Axis 1") + Input.GetAxis("Horizontal"), Input.GetAxis("Joy1 Axis 2")+ Input.GetAxis("Vertical"));
     }
 
+    void Respawn()
+    {
+        if (manager.gameObject.GetComponent<GameManager>().cheats)
+        {
+            this.ForceStopEverything();
+            this.transform.position = respawn;
+        }
+        else
+        {
+            manager.SendMessage("GameOver");
+            trans.position = initialPos;
+            trans.rotation = Quaternion.Euler(initialRot);
+            gameObject.SetActive(false);
+        }
+    }
+
     #endregion
 
 

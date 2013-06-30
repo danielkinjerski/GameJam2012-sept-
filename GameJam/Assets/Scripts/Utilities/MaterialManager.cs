@@ -6,7 +6,7 @@ public class MaterialManager : MonoBehaviour {
 
     Action<float> OnFinishedTransition;
     public Material BlackMat, WhiteMat;
-    public GameObject BlackWorld, WhiteWorld;
+    public GameObject BlackWorld, WhiteWorld, CharBRender, CharWRender;
 
     public float fadeSpeed = .1f;
 
@@ -25,12 +25,22 @@ public class MaterialManager : MonoBehaviour {
 
     public void BeginBlackMaterialChange(float target)
     {
+        CharBRender.SetActive(true);
+        CharWRender.SetActive(false);
         StartCoroutine(ChangeMaterial(BlackMat, target, fadeSpeed, BlackWorld));
     }
 
     public void BeginWhiteMaterialChange(float target)
     {
+        CharBRender.SetActive(false);
+        CharWRender.SetActive(true);
         StartCoroutine(ChangeMaterial(WhiteMat, target, fadeSpeed, WhiteWorld));
+    }
+
+    public void GrayMaterialSetup()
+    {
+        CharBRender.SetActive(true);
+        CharWRender.SetActive(true);
     }
 
     IEnumerator ChangeMaterial(Material mat, float target, float speed, GameObject goToDisable)

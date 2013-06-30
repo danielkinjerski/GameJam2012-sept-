@@ -33,10 +33,7 @@ public class GameManager : MonoBehaviour
     #region Variables
 
     public GameObject BlackCam, WhiteCam, MainCam,
-                    Character,
-                    CharBRender, CharWRender;
-    private GameObject Facebook, fbbutton, fbsuccess, fbpost;
-    public UILabel deathLbl, timeLbl;
+                    Character;
     public static GameState gameState = GameState.OpeningWindow;
     public static CurrentPlayMode currentPlayMode = CurrentPlayMode.Black;
     private bool toggle;
@@ -55,50 +52,30 @@ public class GameManager : MonoBehaviour
         MenuManager.FindMenu<MainScreen>().OnBlackClick += Black;
         MenuManager.FindMenu<MainScreen>().OnGrayClick += Gray;
         MenuManager.FindMenu<MainScreen>().OnWhiteClick += White;
+
+        MenuManager.FindMenu<GameOver>().OnQuitClick += BackToMain;
+        MenuManager.FindMenu<GameOver>().OnReplayClick += Replay;
         gameState = GameState.OpeningWindow;
 
         BlackCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
         WhiteCam.camera.rect = new Rect(0, 0, 0.5f, 1);
 
         MainCam.camera.rect = new Rect(0, 0, 1, 1);
+
         MainCam.SetActive(true);
         BlackCam.SetActive(false);
         WhiteCam.SetActive(false);
-
-        deathLbl.text = "You died: @ time(s)!";
-        timeLbl.text = "Your max time: @";
     }
 
     #endregion
 
     #region UI Events
+
     void BackToMain()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        MenuManager.GoToMenu<MainScreen>();
     }
     
-    void Switch()
-    {
-        if (currentPlayMode != CurrentPlayMode.Grey && Character.transform.parent != null)
-        {
-            Character.transform.parent = null;
-        }
-
-        print("switch - " + GameManager.currentPlayMode);
-
-        switch (GameManager.currentPlayMode)
-        {
-            case CurrentPlayMode.Black:
-                ActivateWhiteMode();
-                break;
-            case CurrentPlayMode.White:
-                ActivateBlackMode();
-                break;
-            case CurrentPlayMode.Grey:
-                ToggleGrayMode();
-                break;
-        }
-    }
     void Gray() 
     {
         WhiteCam.SetActive(true);
@@ -106,8 +83,8 @@ public class GameManager : MonoBehaviour
         gameState = GameState.PlayGame;
         currentPlayMode = CurrentPlayMode.Grey;
         time = Time.timeSinceLevelLoad;
-        CharWRender.SetActive(true);
-        CharBRender.SetActive(true);
+
+        matMan.GrayMaterialSetup();       
 
         MainCam.SetActive(false);
 
@@ -137,8 +114,12 @@ public class GameManager : MonoBehaviour
         string minutes = Mathf.Floor(maxTime / 60).ToString("00");
         string seconds = (maxTime % 60).ToString("00");
         gameState = GameState.GameOver;
-        deathLbl.text = "You WIN! CONGRATULATIONS!";
-        timeLbl.text = "Time taken to complete this win:" + minutes + " minutes " + seconds + " seconds";
+
+        MenuManager.GoToMenu<GameOver>();
+        GameOver go = MenuManager.FindMenu<GameOver>();
+
+        go.deathLbl.text = "You WIN! CONGRATULATIONS!";
+        go.timeLbl.text = "Time taken to complete this win:" + minutes + " minutes " + seconds + " seconds";
     }
 
     void Pause()
@@ -152,14 +133,21 @@ public class GameManager : MonoBehaviour
         float timer = Time.timeSinceLevelLoad - time;
         if (timer > maxTime)
             maxTime = timer;
+
         string minutes = Mathf.Floor(maxTime / 60).ToString("00");
         string seconds = (maxTime % 60).ToString("00");
+
         gameState = GameState.GameOver;
-        deathLbl.text = "You died: @ time(s)!";
-        timeLbl.text = "Your max time: @";
-        deathLbl.text = deathLbl.text.Replace("@", deaths.ToString());
-        timeLbl.text = timeLbl.text.Replace("@", minutes + " minutes " + seconds + " seconds");
+
+        print("death");
+
+        MenuManager.GoToMenu<GameOver>();
+        GameOver go = MenuManager.FindMenu<GameOver>();
+
+        go.deathLbl.text = "You died: " + deaths + " time(s)!";
+        go.timeLbl.text = "Your max time: " + minutes + " minutes " + seconds + " seconds";
     }
+
     void Replay()
     {
         gameState = GameState.PlayGame;
@@ -177,31 +165,52 @@ public class GameManager : MonoBehaviour
 
     #region Utilities
 
+    void Switch()
+    {
+        if (currentPlayMode != CurrentPlayMode.Grey && Character.transform.parent != null)
+        {
+            Character.transform.parent = null;
+        }
+
+        print("switch - " + GameManager.currentPlayMode);
+
+        switch (GameManager.currentPlayMode)
+        {
+            case CurrentPlayMode.Black:
+                ActivateWhiteMode();
+                break;
+            case CurrentPlayMode.White:
+                ActivateBlackMode();
+                break;
+            case CurrentPlayMode.Grey:
+                ToggleGrayMode();
+                break;
+        }
+    }
+
     void ActivateBlackMode()
     {
         print("go black");
         matMan.BeginBlackMaterialChange(1);
         matMan.BeginWhiteMaterialChange(0);
         MainCam.camera.backgroundColor = new Color(.85f, .85f, .85f);
-        CharBRender.SetActive(true);
-        CharWRender.SetActive(false);
+        
         GameManager.currentPlayMode = CurrentPlayMode.Black;
     }
+
     void ActivateWhiteMode()
     {
         print("go white");
         matMan.BeginBlackMaterialChange(0);
         matMan.BeginWhiteMaterialChange(1);
         MainCam.camera.backgroundColor = new Color(.29f, .29f, .29f);
-        CharBRender.SetActive(false);
-        CharWRender.SetActive(true);
         GameManager.currentPlayMode = CurrentPlayMode.White;
     }
 
     void ToggleGrayMode()
     {
         // if we have this on black, then turn off.
-        // Hopefully this switched
+        // Hopefully this works
         if ((BlackCam.camera.cullingMask & (1 << LayerMask.NameToLayer("CharBlack"))) != 0)
         {
             BlackCam.camera.cullingMask &= ~(1 << LayerMask.NameToLayer("CharBlack"));

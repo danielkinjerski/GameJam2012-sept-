@@ -7,7 +7,7 @@ public class RigidCharacterBasics : MonoBehaviour
     #region Variables
 
     public float speed, targetSpeed;
-    private Vector3 force, velocity, respawn, initialPos, initialRot;
+    protected Vector3 force, velocity, respawn, initialPos, initialRot;
     public Vector3 direction;
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
     public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump", sprint = "dash";
