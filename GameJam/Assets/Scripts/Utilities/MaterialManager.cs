@@ -25,13 +25,11 @@ public class MaterialManager : MonoBehaviour {
 
     public void BeginBlackMaterialChange(float target)
     {
-        //BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, target);
         StartCoroutine(ChangeMaterial(BlackMat, target, fadeSpeed, BlackWorld));
     }
 
     public void BeginWhiteMaterialChange(float target)
     {
-        //WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, target);
         StartCoroutine(ChangeMaterial(WhiteMat, target, fadeSpeed, WhiteWorld));
     }
 
@@ -48,7 +46,6 @@ public class MaterialManager : MonoBehaviour {
         processing = true;
         while (Mathf.Abs(mat.color.a - target) > .01f)
         {
-            print("processing - alpha:" + mat.color.a + ", target: " + target);
             mat.color = Color.Lerp(mat.color, new Color(mat.color.r, mat.color.g, mat.color.b, target),speed);
             yield return null; 
         }
