@@ -11,25 +11,25 @@ public class CharacterBasics : MonoBehaviour
     private float speed, targetSpeed;
     private Vector3 direction, force, velocity, respawn, initialPos, initialRot;
     public float jumpHeight, maxSpeed = 8, accelerationSpeed = 1f, gravity = 20;
-	public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump", sprint = "dash";
-	public bool attacking = false, falling = false, jumping = false;
+    public string walk = "Walking", idle = "Standing", fall = "Default Take", jump = "Jump", sprint = "dash";
+    public bool attacking = false, falling = false, jumping = false;
 
     public Transform trans;
-	protected CharacterController controller;
-	protected Animation anim = new Animation();
-	protected SkinnedMeshRenderer mesh;
+    protected CharacterController controller;
+    protected Animation anim = new Animation();
+    protected SkinnedMeshRenderer mesh;
     protected GameObject manager;
 
-	#endregion
+    #endregion
 
     #region Mono Inherit Functions
 
     /// <summary>
-	/// Initizalize
-	/// </summary>
-	protected virtual void Start () 
-	{
-		controller = GetComponent<CharacterController>();
+    /// Initizalize
+    /// </summary>
+    protected virtual void Start () 
+    {
+        controller = GetComponent<CharacterController>();
         trans = this.transform;
         initialPos = trans.position;
         initialRot = trans.rotation.eulerAngles;
@@ -37,14 +37,14 @@ public class CharacterBasics : MonoBehaviour
         anim[jump].wrapMode = WrapMode.Clamp;
         respawn = transform.position;
         manager = GameObject.Find("GameManager");
-	}
+    }
 
     #endregion
 
     #region Player Updates
-		
-	protected virtual void Gravity()
-	{
+        
+    protected virtual void Gravity()
+    {
 
         //If not on the ground, assume normal gravity
         if (!controller.isGrounded)
@@ -78,7 +78,7 @@ public class CharacterBasics : MonoBehaviour
             }
         }
 
-	}
+    }
 
     /// <summary>
     /// Basic movment function
@@ -209,11 +209,11 @@ public class CharacterBasics : MonoBehaviour
         speed = 0;
     }
 
-	/// <summary>
-	/// Used for jumping and launching
-	/// </summary>
-	public void Launch()
-	{
+    /// <summary>
+    /// Used for jumping and launching
+    /// </summary>
+    public void Launch()
+    {
         if (!falling&&!jumping)
         {
             direction.y = jumpHeight;
@@ -221,24 +221,24 @@ public class CharacterBasics : MonoBehaviour
             jumping = true;
             anim.Play(jump);
         }
-	}
-	
-	/// <summary>
-	/// Overloaded to support inserting launch force
-	/// </summary>
-	/// <param name='_force'>
-	/// _force.
-	/// </param>
-	public virtual void Launch(float _force)
-	{
+    }
+    
+    /// <summary>
+    /// Overloaded to support inserting launch force
+    /// </summary>
+    /// <param name='_force'>
+    /// _force.
+    /// </param>
+    public virtual void Launch(float _force)
+    {
 
-		direction.y = _force;
-	}
-	
-	public void Rush(Vector3 _dir, float _amount)
-	{
-		force = _dir * _amount;
-	}
+        direction.y = _force;
+    }
+    
+    public void Rush(Vector3 _dir, float _amount)
+    {
+        force = _dir * _amount;
+    }
 
     void Respawn()
     {

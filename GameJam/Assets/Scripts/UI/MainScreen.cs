@@ -7,27 +7,40 @@ public class MainScreen : BaseMenu
     public event ButtonClickHandler OnGrayClick;
     public event ButtonClickHandler OnWhiteClick;
 
-    void Login()
+    void Start()
     {
-        Debug.Log("Login");
+        OnBlackClick += CloseWindow;
+        OnGrayClick += CloseWindow;
+        OnWhiteClick += CloseWindow;
+
+    }
+
+    void CloseWindow()
+    {
+        MenuManager.FindMenu<MainScreen>().gameObject.SetActive(false);
+    }
+
+    void Black()
+    {
+        Debug.Log("Black");
         if (OnBlackClick != null)
         {
             OnBlackClick();
         }
     }
 
-    void Register()
+    void Gray()
     {
-        Debug.Log("Register");
+        Debug.Log("Gray");
         if (OnGrayClick != null)
         {
             OnGrayClick();
         }
     }
 
-    void Editor()
+    void White()
     {
-        Debug.Log("Editor");
+        Debug.Log("White");
         if (OnWhiteClick != null)
         {
             OnWhiteClick();

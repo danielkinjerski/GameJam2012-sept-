@@ -444,7 +444,7 @@ public static class OuyaInputManager
             case "XBOX 360 FOR WINDOWS (CONTROLLER)":
                 return JoystickType.xbox;
             default:
-                Debug.Log(string.Format("Controller name: {0}", deviceName));
+                //Debug.Log(string.Format("Controller name: {0}", deviceName));
                 return JoystickType.none;
         }
     }
@@ -516,10 +516,10 @@ public static class OuyaInputManager
     /// <param name="atype"></param>
     /// <returns></returns>
     public static string GetInput(OuyaSDK.OuyaPlayer player, AxisTypes axis)
-	{
-		return GetInput(player, axis, AnalogTypes.none);
-	}
-		
+    {
+        return GetInput(player, axis, AnalogTypes.none);
+    }
+        
 
     /// <summary>
     /// Builds a string to get the controller by player.

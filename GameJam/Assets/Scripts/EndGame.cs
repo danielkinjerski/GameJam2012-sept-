@@ -4,15 +4,15 @@ using System.Collections;
 public class EndGame : MonoBehaviour {
     public TweenScale ts;
     GameObject player;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    // Use this for initialization
+    void Start () {
+    
+    }
+    
+    // Update is called once per frame
+    void Update () {
+    
+    }
 
     void OnTriggerEnter(Collider collider)
     {

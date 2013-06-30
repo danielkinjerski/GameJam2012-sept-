@@ -184,7 +184,12 @@ public class MenuManager : MonoBehaviour {
     /// <typeparam name="T"></typeparam>
     static public void GoToMenu<T>() where T : Component
     {
-        mm.GetMenu<T>().gameObject.SetActive(true);
+        T t = mm.GetMenu<T>();
+        if (t != null)
+        {
+            mm.menus[mm.selectedMenuId].gameObject.SetActive(false);
+            mm.GetMenu<T>().gameObject.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -216,7 +221,7 @@ public class MenuManager : MonoBehaviour {
     #region Monobehaviour Functions
 
     // Use this for initialization
-	void Start () {
+    void Start () {
         bool foundSelected = false;
         foreach (Component menu in this.menus)
         {
@@ -230,9 +235,9 @@ public class MenuManager : MonoBehaviour {
         {
             throw new Exception( "Missing Default Starting Menu..." ); 
         }
-	}
+    }
     // Update is called once per frame
-	void Update () {
+    void Update () {
 
         if (Input.GetKeyUp(KeyCode.X))
         {

@@ -2,11 +2,11 @@ using UnityEngine;
 using System.Collections;
 
 public class Player : RigidCharacterBasics {
-	
+    
     #region Mono Inherit Functions
-	
-	public void FixedUpdate()
-	{
+    
+    public void FixedUpdate()
+    {
         if (GameManager.gameState != GameState.PlayGame)
             return;
 
@@ -14,9 +14,9 @@ public class Player : RigidCharacterBasics {
         var down = transform.TransformDirection(Vector3.down);
 
         BaseMovement(InputMovement(), InputMovement().magnitude );
-		
+        
 
-	}
+    }
     public bool onPlatform = false;
     public void CheckForPlatforms()
     {

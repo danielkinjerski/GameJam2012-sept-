@@ -8,11 +8,11 @@ public abstract class BaseMenu : MonoBehaviour
     protected MenuManager mm;
     public bool isStartMenu = false;
 
-	// Use this for initialization
-	protected virtual void Awake () 
+    // Use this for initialization
+    protected virtual void Awake () 
     {
         MenuManager.Register(this, isStartMenu);	
-	}
+    }
 
     protected virtual void GoBack()
     {

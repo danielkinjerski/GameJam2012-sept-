@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class MaterialManager : MonoBehaviour {
 
+    Action<float> OnFinishedTransition;
     public Material BlackMat, WhiteMat;
+    public GameObject BlackWorld, WhiteWorld;
 
     public float fadeSpeed = .1f;
 
@@ -22,24 +25,38 @@ public class MaterialManager : MonoBehaviour {
 
     public void BeginBlackMaterialChange(float target)
     {
-        processing = true;
-        StartCoroutine(ChangeMaterial(BlackMat, target, fadeSpeed));
+        //BlackMat.color = new Color(BlackMat.color.r, BlackMat.color.g, BlackMat.color.b, target);
+        StartCoroutine(ChangeMaterial(BlackMat, target, fadeSpeed, BlackWorld));
     }
 
     public void BeginWhiteMaterialChange(float target)
     {
-        processing = true;
-        StartCoroutine(ChangeMaterial(WhiteMat, target, fadeSpeed));
+        //WhiteMat.color = new Color(WhiteMat.color.r, WhiteMat.color.g, WhiteMat.color.b, target);
+        StartCoroutine(ChangeMaterial(WhiteMat, target, fadeSpeed, WhiteWorld));
     }
 
-    IEnumerator ChangeMaterial(Material mat, float target, float speed)
+    IEnumerator ChangeMaterial(Material mat, float target, float speed, GameObject goToDisable)
     {
+        while (processing)
+        {
+            yield return null; 
+        }
+        if (target > 0)
+        {
+            goToDisable.SetActive(true);
+        }
+        processing = true;
         while (Mathf.Abs(mat.color.a - target) > .01f)
         {
+            print("processing - alpha:" + mat.color.a + ", target: " + target);
             mat.color = Color.Lerp(mat.color, new Color(mat.color.r, mat.color.g, mat.color.b, target),speed);
             yield return null; 
         }
-        processing = true;
+        if (target == 0)
+        {
+            goToDisable.SetActive(false);
+        }
+        processing = false;
         yield break;
 
     }
