@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     private int deaths;
     private float time, maxTime;
 
-    public MaterialManager matMan;
+    MaterialManager matMan;
 
     #endregion
 
@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
 
         MenuManager.FindMenu<GameOver>().OnQuitClick += BackToMain;
         MenuManager.FindMenu<GameOver>().OnReplayClick += Replay;
+
+        matMan = GetComponent<MaterialManager>();
         gameState = GameState.OpeningWindow;
 
         BlackCam.camera.rect = new Rect(0.5f, 0, 0.5f, 1);
@@ -110,7 +112,7 @@ public class GameManager : MonoBehaviour
 
     void EndGame()
     {
-        float timer = Time.timeSinceLevelLoad - time;        
+        float timer = Time.timeSinceLevelLoad - time;
         string minutes = Mathf.Floor(maxTime / 60).ToString("00");
         string seconds = (maxTime % 60).ToString("00");
         gameState = GameState.GameOver;

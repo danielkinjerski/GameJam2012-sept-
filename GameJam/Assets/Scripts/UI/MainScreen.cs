@@ -9,15 +9,15 @@ public class MainScreen : BaseMenu
 
     void Start()
     {
-        OnBlackClick += CloseWindow;
-        OnGrayClick += CloseWindow;
-        OnWhiteClick += CloseWindow;
+        OnBlackClick += PlayGame;
+        OnGrayClick += PlayGame;
+        OnWhiteClick += PlayGame;
 
     }
 
-    void CloseWindow()
+    void PlayGame()
     {
-        MenuManager.FindMenu<MainScreen>().gameObject.SetActive(false);
+        MenuManager.GoToMenu<Hud>();
     }
 
     void Black()

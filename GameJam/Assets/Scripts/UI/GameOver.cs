@@ -11,18 +11,18 @@ public class GameOver : BaseMenu
 
     void Start()
     {
-        OnReplayClick += CloseWindow;
+        OnReplayClick += GameOver_OnReplayClick;
         OnQuitClick += GameOver_OnQuitClick;
+    }
+
+    void GameOver_OnReplayClick()
+    {
+        MenuManager.GoToMenu<Hud>();
     }
 
     void GameOver_OnQuitClick()
     {
         MenuManager.GoToMenu<GameOver>();
-    }
-
-    void CloseWindow()
-    {
-        MenuManager.FindMenu<GameOver>().gameObject.SetActive(false);
     }
 
     void Replay()

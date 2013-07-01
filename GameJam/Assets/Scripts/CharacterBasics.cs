@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-// TODO: MAKE STATEMACHINE
+/// TODO: MAKE STATEMACHINE
 
 public class CharacterBasics : MonoBehaviour
 {

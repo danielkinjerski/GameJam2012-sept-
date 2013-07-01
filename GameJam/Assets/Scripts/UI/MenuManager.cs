@@ -110,6 +110,28 @@ public class MenuManager : MonoBehaviour {
                 this.selectedMenuName = menuName;
                 this.selectedMenuId = i;
             }
+
+        }
+    }
+
+    /// <summary>
+    /// Will set current menu based on name
+    /// </summary>
+    /// <param name="menuName"></param>
+    private void ChangeMenu<T>() where T : Component
+    {
+        for (int i = 0; i < menus.Count; i++)
+        {
+            if (menus[i] is T)
+            {
+                menus[i].gameObject.SetActive(true);
+                this.selectedMenuName = menus[i].name;
+                this.selectedMenuId = i;   
+            }
+            else
+            {
+                menus[i].gameObject.SetActive(false);
+            }
             
         }
     }
@@ -184,12 +206,7 @@ public class MenuManager : MonoBehaviour {
     /// <typeparam name="T"></typeparam>
     static public void GoToMenu<T>() where T : Component
     {
-        T t = mm.GetMenu<T>();
-        if (t != null)
-        {
-            mm.menus[mm.selectedMenuId].gameObject.SetActive(false);
-            mm.GetMenu<T>().gameObject.SetActive(true);
-        }
+        mm.ChangeMenu<T>();
     }
 
     /// <summary>

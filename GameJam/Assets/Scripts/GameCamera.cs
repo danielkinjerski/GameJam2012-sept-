@@ -61,8 +61,8 @@ public class GameCamera : MonoBehaviour
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		//if (!target)
-		//	return;
+		if (!target || playerTarget == null)
+			return;
         
 	
 		FindClosestWaypoint ();
